@@ -1,0 +1,17 @@
+@media (max-width: 992px) {
+  .navbar-menu {
+    display: none;
+  }
+
+  .navbar-actions {
+    display: none;
+  }
+
+  .navbar-toggle {
+    display: flex;
+  }
+
+  .navbar-logo {
+    width: auto;
+  }
+}

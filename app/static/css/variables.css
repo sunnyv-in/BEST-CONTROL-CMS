@@ -1,0 +1,64 @@
+/* ===============================
+   GOOGLE FONTS
+================================= */
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap");
+
+/* ===============================
+   ROOT VARIABLES
+================================= */
+
+:root{
+
+    /* Brand Colors */
+
+    --primary:#2563EB;
+    --primary-dark:#1D4ED8;
+
+    --secondary:#10B981;
+
+    --dark:#0F172A;
+
+    --text:#111827;
+
+    --text-light:#475569;
+
+    --background:#FFFFFF;
+
+    --background-light:#F8FAFC;
+
+    --border:#E2E8F0;
+
+    /* Fonts */
+
+    --heading-font:"Poppins",sans-serif;
+
+    --body-font:"Inter",sans-serif;
+
+    /* Border Radius */
+
+    --radius-sm:8px;
+
+    --radius-md:12px;
+
+    --radius-lg:20px;
+
+    --radius-full:999px;
+
+    /* Shadows */
+
+    --shadow-sm:0 2px 8px rgba(0,0,0,.05);
+
+    --shadow-md:0 8px 25px rgba(0,0,0,.08);
+
+    --shadow-lg:0 18px 40px rgba(0,0,0,.12);
+
+    /* Container */
+
+    --container:1320px;
+
+    /* Transition */
+
+    --transition:.3s ease;
+
+}

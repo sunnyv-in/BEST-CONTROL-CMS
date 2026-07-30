@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>{% block title %}BEST CONTROL{% endblock %}</title>
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/navbar.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/hero.css') }}"
+    />
+  </head>
+  <body>
+    {% include 'components/navbar.html' %}
+
+    <main>{% block content %} {% endblock %}</main>
+
+    {% include 'components/footer.html' %}
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/hero-products.js') }}"></script>
+
+    <script src="{{ url_for('static', filename='js/hero-render.js') }}"></script>
+
+    <script src="{{ url_for('static', filename='js/hero-navigation.js') }}"></script>
+
+    <script src="{{ url_for('static', filename='js/hero-scroll.js') }}"></script>
+
+    <script src="{{ url_for('static', filename='js/hero-main.js') }}"></script>
+  </body>
+</html>

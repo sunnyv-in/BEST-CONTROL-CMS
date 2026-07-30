@@ -1,0 +1,338 @@
+/* ==========================================
+   NAVBAR
+========================================== */
+
+.navbar{
+    position:sticky;
+    top:0;
+    width:100%;
+    background:rgba(15,23,42,.97);
+    backdrop-filter:blur(14px);
+    border-bottom:1px solid rgba(255,255,255,.05);
+    z-index:1000;
+}
+
+.navbar-container{
+    height:84px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:30px;
+    position:relative;
+}
+
+/* ===============================
+   LOGO
+================================= */
+
+.navbar-logo{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:14px;
+
+    width:300px;
+
+    flex-shrink:0;
+
+    transition:.35s ease;
+
+}
+
+.navbar-logo:hover{
+
+    transform:translateY(-4px) scale(1.03);
+
+}
+
+.navbar-logo img{
+
+    width:78px;
+
+    height:78px;
+
+    object-fit:contain;
+
+    transition:.35s ease;
+
+}
+
+.navbar-logo:hover img{
+
+    transform:scale(1.08);
+
+    filter:drop-shadow(0 0 10px rgba(37,99,235,.35));
+
+}
+
+.brand{
+
+    display:flex;
+
+    flex-direction:column;
+
+}
+
+.brand h2{
+
+    font-family:var(--heading-font);
+
+    color:white;
+
+    font-size:20px;
+
+    font-weight:700;
+
+    line-height:1;
+
+    letter-spacing:.4px;
+
+}
+
+.brand p{
+
+    color:#CBD5E1;
+
+    font-size:14px;
+
+    margin-top:6px;
+
+}
+
+/* ===============================
+   MENU
+================================= */
+
+.navbar-menu{
+    display:flex;
+    align-items:center;
+    justify-content:flex-end;
+    gap:30px;
+    margin-left:20px;
+    flex:1;
+}
+
+.navbar-menu a{
+
+    position:relative;
+
+    color:white;
+
+    font-size:15px;
+
+    font-weight:500;
+
+    transition:.3s;
+
+}
+
+.navbar-menu a::after{
+
+    content:"";
+
+    position:absolute;
+
+    left:0;
+
+    bottom:-8px;
+
+    width:0;
+
+    height:2px;
+
+    background:var(--primary);
+
+    transition:.3s;
+
+}
+
+.navbar-menu a:hover{
+
+    color:#60A5FA;
+
+}
+
+.navbar-menu a:hover::after{
+
+    width:100%;
+
+}
+
+/* ===============================
+   BUTTONS
+================================= */
+
+.navbar-actions{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    flex-shrink:0;
+
+}
+
+.navbar-toggle{
+    display:none;
+    flex-direction:column;
+    gap:5px;
+    background:none;
+    border:none;
+    cursor:pointer;
+    z-index:1100;
+    position:absolute;
+    right:0;
+    top:50%;
+    transform:translateY(-50%);
+}
+.navbar-toggle span{
+    width:26px;
+    height:2px;
+    background:white;
+    border-radius:2px;
+}
+
+.navbar{
+    transition: transform .35s ease;
+}
+.navbar-hidden{
+    transform: translateY(-100%);
+}
+
+/* ===========================
+   MOBILE MENU
+=========================== */
+
+.mobile-menu{
+
+    position:absolute;
+
+    top:84px;
+
+    left:0;
+
+    width:100%;
+
+    background:#0F172A;
+
+    display:none;
+
+    padding:25px;
+
+    border-top:1px solid rgba(255,255,255,.08);
+
+    box-shadow:0 15px 40px rgba(0,0,0,.2);
+
+}
+
+.mobile-menu.active{
+
+    display:block;
+
+}
+
+.mobile-menu ul{
+
+    list-style:none;
+
+}
+
+.mobile-menu li{
+
+    margin-bottom:18px;
+
+}
+
+.mobile-menu a{
+
+    color:white;
+
+    text-decoration:none;
+
+    font-size:18px;
+
+    font-weight:500;
+
+}
+
+.mobile-buttons{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:14px;
+
+    margin-top:25px;
+
+}
+
+.mobile-buttons .btn-outline{
+    color:#2563EB !important;
+    background:#FFFFFF;
+    border:2px solid #2563EB;
+}
+
+.mobile-buttons .btn-primary{
+    color:#FFFFFF !important;
+}
+
+/* ===========================
+   MOBILE NAVIGATION LINKS
+=========================== */
+
+.mobile-menu ul li a{
+
+    display:block;
+
+    padding:14px 16px;
+
+    color:#FFFFFF;
+
+    text-decoration:none;
+
+    font-size:18px;
+
+    font-weight:600;
+
+    border-radius:10px;
+
+    transition:all .3s ease;
+
+}
+
+/* Hover */
+
+.mobile-menu ul li a:hover{
+
+    background:rgba(37,99,235,.15);
+
+    color:#60A5FA;
+
+    padding-left:24px;
+
+}
+
+/* While clicking */
+
+.mobile-menu ul li a:active{
+
+    background:#2563EB;
+
+    color:#FFFFFF;
+
+}
+
+/* Keyboard accessibility */
+
+.mobile-menu ul li a:focus{
+
+    outline:none;
+
+    background:rgba(37,99,235,.20);
+
+}

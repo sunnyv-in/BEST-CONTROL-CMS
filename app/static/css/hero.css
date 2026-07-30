@@ -1,0 +1,343 @@
+
+/* ==========================================
+   HERO SECTION
+========================================== */
+
+.hero{
+    min-height:calc(100vh - 84px);
+
+    display:flex;
+    align-items:center;
+
+    background:
+    radial-gradient(circle at top right,#DBEAFE 0%,transparent 40%),
+    #F8FAFC;
+
+    overflow:hidden;
+}
+
+.hero-container{
+
+    display:grid;
+    grid-template-columns:1fr 1fr;
+
+    align-items:center;
+
+    gap:80px;
+}
+
+/* ===============================
+   LEFT
+================================= */
+
+.hero-content{
+    max-width:650px;
+}
+
+.hero-badge{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    padding:10px 18px;
+
+    background:#DBEAFE;
+
+    color:#2563EB;
+
+    border-radius:999px;
+
+    font-weight:600;
+
+    margin-bottom:28px;
+}
+
+.hero h1{
+
+    font-size:64px;
+
+    line-height:1.05;
+
+    color:#111827;
+
+    margin-bottom:26px;
+
+    font-weight:800;
+}
+
+.hero h1 span{
+
+    display:block;
+
+    color:#2563EB;
+}
+
+.hero p{
+
+    font-size:20px;
+
+    color:#64748B;
+
+    line-height:1.8;
+
+    margin-bottom:40px;
+}
+
+.hero-buttons{
+
+    display:flex;
+
+    gap:18px;
+
+    margin-bottom:45px;
+}
+
+.hero-features{
+
+    display:flex;
+
+    gap:35px;
+
+    flex-wrap:wrap;
+}
+
+.feature{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    color:#334155;
+
+    font-weight:600;
+}
+
+/* ===============================
+   RIGHT
+================================= */
+
+.hero-image{
+
+    display:flex;
+
+    justify-content:center;
+}
+
+.hero-image-wrapper{
+
+    position:relative;
+
+    width:600px;
+
+    height:600px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+}
+
+.hero-circle{
+
+    position:absolute;
+
+    width:520px;
+
+    height:520px;
+
+    border-radius:50%;
+
+    background:linear-gradient(
+        135deg,
+        #DBEAFE,
+        white
+    );
+
+    box-shadow:
+    0 30px 80px rgba(37,99,235,.12);
+}
+
+.hero-image img{
+
+    position:relative;
+
+    width:520px;
+
+    z-index:5;
+
+    transition:.45s;
+}
+
+.hero-image img:hover{
+
+    transform:
+    translateY(-10px)
+    rotate(-2deg)
+    scale(1.04);
+}
+
+/* ==========================================
+   PRODUCT CARD
+========================================== */
+
+.hero-showcase{
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    gap:30px;
+}
+
+
+
+.product-spec-card{
+
+    width:420px;
+
+    background:white;
+
+    border-radius:22px;
+
+    padding:28px;
+
+    box-shadow:0 20px 50px rgba(15,23,42,.08);
+
+    border:1px solid #E2E8F0;
+}
+
+.product-model{
+
+    display:inline-block;
+
+    padding:6px 14px;
+
+    background:#DBEAFE;
+
+    color:#2563EB;
+
+    border-radius:999px;
+
+    font-size:13px;
+
+    font-weight:600;
+
+    margin-bottom:18px;
+}
+
+.product-title{
+
+    font-size:24px;
+
+    color:#111827;
+
+    margin-bottom:24px;
+}
+
+.spec-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(2,1fr);
+
+    gap:20px;
+}
+
+.spec-item{
+
+    padding:18px;
+
+    border-radius:14px;
+
+    background:#F8FAFC;
+
+    border:1px solid #E2E8F0;
+}
+
+.spec-item span{
+
+    display:block;
+
+    font-size:13px;
+
+    color:#64748B;
+
+    margin-bottom:8px;
+}
+
+.spec-item strong{
+
+    font-size:18px;
+
+    color:#111827;
+}
+
+/* ==========================
+   Hero Navigation Buttons
+========================== */
+
+.hero-image {
+    position: relative;
+}
+
+.hero-nav {
+
+    position: absolute;
+
+    width: 52px;
+    height: 52px;
+
+    border: none;
+    border-radius: 50%;
+
+    background: white;
+
+    box-shadow: 0 15px 35px rgba(0,0,0,.12);
+
+    font-size: 22px;
+
+    cursor: pointer;
+
+    transition: .3s;
+
+    z-index: 20;
+
+}
+
+.hero-nav:hover{
+
+    transform: scale(1.08);
+
+    background:#2563eb;
+
+    color:white;
+
+}
+
+.hero-prev{
+
+    left:-25px;
+
+    top:50%;
+
+    transform:translateY(-50%);
+
+}
+
+.hero-next{
+
+    right:-25px;
+
+    top:50%;
+
+    transform:translateY(-50%);
+
+}
