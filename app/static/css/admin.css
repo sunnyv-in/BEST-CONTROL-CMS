@@ -1,0 +1,41 @@
+:root {
+    --sidebar-width: 260px;
+    --primary: #2563eb;
+    --dark: #1e293b;
+    --light: #f8fafc;
+    --border: #e5e7eb;
+}
+
+body {
+    background: var(--light);
+    font-family: "Segoe UI", sans-serif;
+}
+
+.sidebar {
+    width: var(--sidebar-width);
+    min-height: 100vh;
+    background: var(--dark);
+}
+
+.content {
+    min-height: 100vh;
+}
+
+.navbar {
+    background: white;
+    border-bottom: 1px solid var(--border);
+}
+
+.sidebar .list-group-item{
+    transition: .2s;
+    border-radius: 0;
+}
+
+.sidebar .list-group-item:hover{
+    background: rgba(255,255,255,.1) !important;
+    padding-left: 28px;
+}
+
+.sidebar i{
+    width:20px;
+}

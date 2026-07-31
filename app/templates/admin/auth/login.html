@@ -1,38 +1,77 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <title>Admin Login</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+
 </head>
 
-<body>
+<body class="bg-light">
 
-<h2>BEST CONTROL CMS</h2>
+<div class="container">
 
-<form method="POST">
+    <div class="row vh-100 justify-content-center align-items-center">
 
-    {{ form.hidden_tag() }}
+        <div class="col-md-4">
 
-    <p>
-        {{ form.username.label }}<br>
-        {{ form.username(size=40) }}
-    </p>
+            <div class="card shadow">
 
-    <p>
-        {{ form.password.label }}<br>
-        {{ form.password(size=40) }}
-    </p>
+                <div class="card-body">
 
-    <p>
-        {{ form.remember() }}
-        {{ form.remember.label }}
-    </p>
+                    <h3 class="text-center mb-4">
 
-    <p>
-        {{ form.submit() }}
-    </p>
+                        BEST CONTROL CMS
 
-</form>
+                    </h3>
+
+                    <form method="POST">
+
+                        {{ form.hidden_tag() }}
+
+                        <div class="mb-3">
+
+                            {{ form.username.label(class="form-label") }}
+
+                            {{ form.username(class="form-control") }}
+
+                        </div>
+
+                        <div class="mb-3">
+
+                            {{ form.password.label(class="form-label") }}
+
+                            {{ form.password(class="form-control") }}
+
+                        </div>
+
+                        <div class="form-check mb-3">
+
+                            {{ form.remember(class="form-check-input") }}
+
+                            {{ form.remember.label(class="form-check-label") }}
+
+                        </div>
+
+                        {{ form.submit(class="btn btn-primary w-100") }}
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
 
 </body>
+
 </html>

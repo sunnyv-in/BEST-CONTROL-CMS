@@ -1,0 +1,20 @@
+<nav class="navbar navbar-light bg-white border-bottom px-4">
+
+    <span class="navbar-brand mb-0 h4">
+        BEST CONTROL CMS
+    </span>
+
+    <div>
+
+        {{ current_user.full_name }}
+
+        <a class="btn btn-outline-danger btn-sm ms-3"
+           href="{{ url_for('admin.logout') }}">
+
+            Logout
+
+        </a>
+
+    </div>
+
+</nav>
