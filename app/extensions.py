@@ -2,11 +2,16 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_migrate import Migrate
 
-# Database Instance
 db = SQLAlchemy()
 
-# Login manager instance
 login_manager = LoginManager()
 
-# Database migration instance
 migrate = Migrate()
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    # Import here to avoid circular imports
+    from app.models import Admin
+
+    return Admin.query.get(int(user_id))

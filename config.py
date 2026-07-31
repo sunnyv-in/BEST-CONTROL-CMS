@@ -16,3 +16,5 @@ class Config:
 
     # Disable modification tracking to improve performance
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+    WTF_CSRF_ENABLED = True
