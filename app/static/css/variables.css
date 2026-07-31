@@ -62,3 +62,24 @@
     --transition:.3s ease;
 
 }
+
+/* ===============================
+   ADMIN VARIABLES
+================================= */
+
+:root{
+
+    --admin-sidebar:#1E293B;
+    --admin-sidebar-hover:#334155;
+
+    --admin-navbar:#FFFFFF;
+
+    --admin-content:#F8FAFC;
+
+    --admin-card:#FFFFFF;
+
+    --admin-success:#10B981;
+    --admin-warning:#F59E0B;
+    --admin-danger:#EF4444;
+
+}

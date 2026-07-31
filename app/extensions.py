@@ -6,6 +6,10 @@ db = SQLAlchemy()
 
 login_manager = LoginManager()
 
+login_manager.login_view = "admin.login"
+login_manager.login_message = "Please log in to continue."
+login_manager.login_message_category = "warning"
+
 migrate = Migrate()
 
 
