@@ -5,12 +5,13 @@ from app.models.base import BaseModel, TimestampMixin
 class Product(TimestampMixin, BaseModel):
     __tablename__ = "products"
 
-    # specifications = db.relationship(
-    # "ProductSpecification",
-    # back_populates="product",
-    # cascade="all, delete-orphan",
-    # lazy=True
-    # )
+    specifications = db.relationship(
+    "ProductSpecification",
+    back_populates="product",
+    cascade="all, delete-orphan",
+    lazy=True,
+    order_by="ProductSpecification.display_order"
+    )
 
     category_id = db.Column(
         db.Integer,

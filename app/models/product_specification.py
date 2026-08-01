@@ -12,18 +12,13 @@ class ProductSpecification(TimestampMixin, BaseModel):
     )
 
     name = db.Column(
-        db.String(100),
+        db.String(120),
         nullable=False
     )
 
     value = db.Column(
         db.String(255),
         nullable=False
-    )
-
-    unit = db.Column(
-        db.String(30),
-        nullable=True
     )
 
     display_order = db.Column(
@@ -38,4 +33,4 @@ class ProductSpecification(TimestampMixin, BaseModel):
     )
 
     def __repr__(self):
-        return f"<Specification {self.name}: {self.value}>"
+        return f"<ProductSpecification {self.name}>"

@@ -1,0 +1,135 @@
+{% extends "admin/layout.html" %}
+
+{% block title %}
+{{ product.name }}
+{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+
+        <h1>{{ product.name }}</h1>
+
+        <p class="text-muted mb-0">
+
+            {{ product.category.name }}
+
+        </p>
+
+    </div>
+
+    <a
+        href="{{ url_for('admin.product_list') }}"
+        class="btn btn-outline-secondary">
+
+        <i class="bi bi-arrow-left"></i>
+
+        Back
+
+    </a>
+
+</div>
+
+<div class="card shadow-sm border-0">
+
+<div class="card-body">
+
+<div class="row">
+
+<div class="col-lg-4">
+
+{% if product.primary_image %}
+
+<img
+src="{{ url_for('static', filename='uploads/products/' ~ product.primary_image) }}"
+class="img-fluid rounded border">
+
+{% else %}
+
+<div
+class="border rounded d-flex align-items-center justify-content-center"
+style="height:300px;">
+
+No Image
+
+</div>
+
+{% endif %}
+
+</div>
+
+<div class="col-lg-8">
+
+<h4>Product Information</h4>
+
+<table class="table">
+
+<tr>
+<th width="220">Model Number</th>
+<td>{{ product.model_number or "-" }}</td>
+</tr>
+
+<tr>
+<th>Category</th>
+<td>{{ product.category.name }}</td>
+</tr>
+
+<tr>
+<th>Status</th>
+<td>
+
+{% if product.published %}
+<span class="badge bg-success">Published</span>
+{% else %}
+<span class="badge bg-secondary">Draft</span>
+{% endif %}
+
+</td>
+</tr>
+
+<tr>
+<th>Featured</th>
+<td>
+
+{% if product.featured %}
+<span class="badge bg-warning text-dark">Yes</span>
+{% else %}
+No
+{% endif %}
+
+</td>
+</tr>
+
+</table>
+
+</div>
+
+</div>
+
+<hr>
+
+<h4>Short Description</h4>
+
+<p>
+
+{{ product.short_description or "No short description." }}
+
+</p>
+
+<hr>
+
+<h4>Description</h4>
+
+<p style="white-space: pre-line;">
+
+{{ product.description or "No description." }}
+
+</p>
+
+</div>
+
+</div>
+
+{% endblock %}

@@ -30,6 +30,18 @@ def product_list():
     )
 
 
+@admin_bp.route("/products/<int:id>")
+@login_required
+def view_product(id):
+
+    product = Product.query.get_or_404(id)
+
+    return render_template(
+        "admin/products/view.html",
+        product=product,
+    )
+
+
 @admin_bp.route("/products/create", methods=["GET", "POST"])
 @login_required
 def create_product():
