@@ -1,0 +1,75 @@
+{% extends "admin/layout.html" %}
+
+{% block title %}Edit Product{% endblock %}
+
+{% block content %}
+
+<h1>Edit Product</h1>
+
+<form method="POST">
+
+    {{ form.hidden_tag() }}
+
+    <div class="mb-3">
+        {{ form.category_id.label }}
+        {{ form.category_id(class="form-select") }}
+    </div>
+
+    <div class="mb-3">
+        {{ form.name.label }}
+        {{ form.name(class="form-control", id="name") }}
+    </div>
+
+    <div class="mb-3">
+        {{ form.slug.label }}
+        {{ form.slug(class="form-control", id="slug") }}
+    </div>
+
+    <div class="mb-3">
+        {{ form.model_number.label }}
+        {{ form.model_number(class="form-control") }}
+    </div>
+
+    <div class="mb-3">
+        {{ form.short_description.label }}
+        {{ form.short_description(class="form-control", rows=3) }}
+    </div>
+
+    <div class="mb-3">
+        {{ form.description.label }}
+        {{ form.description(class="form-control", rows=6) }}
+    </div>
+
+    <div class="form-check mb-2">
+        {{ form.featured(class="form-check-input") }}
+        {{ form.featured.label(class="form-check-label") }}
+    </div>
+
+    <div class="form-check mb-3">
+        {{ form.published(class="form-check-input") }}
+        {{ form.published.label(class="form-check-label") }}
+    </div>
+
+    {{ form.submit(class="btn btn-primary", value="Update Product") }}
+
+</form>
+
+{% endblock %}
+
+{% block scripts %}
+
+<script>
+const nameInput = document.getElementById("name");
+const slugInput = document.getElementById("slug");
+
+nameInput.addEventListener("input", function () {
+    slugInput.value = this.value
+        .toLowerCase()
+        .trim()
+        .replace(/\s+/g, "-")
+        .replace(/[^\w\-]+/g, "")
+        .replace(/\-\-+/g, "-");
+});
+</script>
+
+{% endblock %}
