@@ -1,0 +1,49 @@
+{% extends "admin/layout.html" %}
+
+{% block content %}
+
+<h1>Edit Category</h1>
+
+<form method="POST">
+
+    {{ form.hidden_tag() }}
+
+    <div class="mb-3">
+        {{ form.name.label }}
+        {{ form.name(class="form-control", id="name") }}
+    </div>
+
+    <div class="mb-3">
+        {{ form.slug.label }}
+        {{ form.slug(class="form-control", id="slug") }}
+    </div>
+
+    <div class="mb-3">
+        {{ form.description.label }}
+        {{ form.description(class="form-control", rows=5) }}
+    </div>
+
+    <div class="form-check mb-3">
+        {{ form.is_active(class="form-check-input") }}
+        {{ form.is_active.label(class="form-check-label") }}
+    </div>
+
+    {{ form.submit(class="btn btn-primary", value="Update Category") }}
+
+</form>
+{% block scripts %}
+<script>
+const nameInput = document.getElementById("name");
+const slugInput = document.getElementById("slug");
+
+nameInput.addEventListener("input", function () {
+    slugInput.value = this.value
+        .toLowerCase()
+        .trim()
+        .replace(/\s+/g, "-")
+        .replace(/[^\w-]+/g, "")
+        .replace(/--+/g, "-");
+});
+</script>
+{% endblock %}
+{% endblock %}

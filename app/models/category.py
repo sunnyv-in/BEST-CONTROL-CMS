@@ -50,7 +50,6 @@ class Category(TimestampMixin, BaseModel):
         nullable=True
     )
 
-    # Relationship
     products = db.relationship(
         "Product",
         back_populates="category",
