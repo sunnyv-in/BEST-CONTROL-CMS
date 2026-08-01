@@ -1,0 +1,207 @@
+{% extends "admin/layout.html" %}
+
+{% block title %}
+Specifications
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+
+        <h1>Specifications</h1>
+
+        <p class="text-muted">
+
+            Manage reusable product specifications.
+
+        </p>
+
+    </div>
+
+    <a
+        href="{{ url_for('admin.create_specification_library') }}"
+        class="btn btn-primary"
+    >
+
+        <i class="bi bi-plus-lg"></i>
+
+        Add Specification
+
+    </a>
+
+</div>
+
+<hr>
+
+<div class="table-card">
+
+<table class="table align-middle">
+
+<thead>
+
+<tr>
+
+<th>Name</th>
+
+<th>Group</th>
+
+<th>Type</th>
+
+<th>Unit</th>
+
+<th>Required</th>
+
+<th>Filterable</th>
+
+<th>Status</th>
+
+<th width="170">Actions</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+{% for specification in specifications %}
+
+<tr>
+
+<td>
+
+<strong>{{ specification.name }}</strong>
+
+</td>
+
+<td>
+
+{{ specification.group }}
+
+</td>
+
+<td>
+
+{{ specification.data_type|title }}
+
+</td>
+
+<td>
+
+{{ specification.unit or "-" }}
+
+</td>
+
+<td>
+
+{% if specification.is_required %}
+
+<span class="badge bg-success">
+
+Yes
+
+</span>
+
+{% else %}
+
+—
+
+{% endif %}
+
+</td>
+
+<td>
+
+{% if specification.is_filterable %}
+
+<span class="badge bg-info">
+
+Yes
+
+</span>
+
+{% else %}
+
+—
+
+{% endif %}
+
+</td>
+
+<td>
+
+{% if specification.is_active %}
+
+<span class="badge bg-success">
+
+Active
+
+</span>
+
+{% else %}
+
+<span class="badge bg-secondary">
+
+Inactive
+
+</span>
+
+{% endif %}
+
+</td>
+
+<td>
+
+<a
+href="{{ url_for('admin.edit_specification_library', id=specification.id) }}"
+class="btn btn-sm btn-outline-primary"
+>
+
+Edit
+
+</a>
+
+<form
+method="POST"
+action="{{ url_for('admin.delete_specification_library', id=specification.id) }}"
+class="d-inline"
+onsubmit="return confirm('Delete this specification?');"
+>
+
+<button
+class="btn btn-sm btn-outline-danger"
+type="submit"
+>
+
+Delete
+
+</button>
+
+</form>
+
+</td>
+
+</tr>
+
+{% else %}
+
+<tr>
+
+<td colspan="8" class="text-center">
+
+No specifications found.
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+
+{% endblock %}

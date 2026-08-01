@@ -6,12 +6,21 @@ from flask import (
     current_app,
 )
 
+from app.forms import (
+    ProductForm,
+    ProductSpecificationForm,
+)
+
 from flask_login import login_required
 
 from app.admin import admin_bp
 from app.extensions import db
 from app.forms import ProductForm
-from app.models import Product, Category
+from app.models import (
+    Product,
+    Category,
+    ProductSpecification,
+)
 
 import os
 from uuid import uuid4
@@ -36,9 +45,12 @@ def view_product(id):
 
     product = Product.query.get_or_404(id)
 
+    specification_form = ProductSpecificationForm()
+
     return render_template(
         "admin/products/view.html",
         product=product,
+        specification_form=specification_form,
     )
 
 

@@ -1,135 +1,240 @@
-{% extends "admin/layout.html" %}
-
-{% block title %}
-{{ product.name }}
-{% endblock %}
-
-{% block content %}
+{% extends "admin/layout.html" %} {% block title %} {{ product.name }} {%
+endblock %} {% block content %}
 
 <div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h1>{{ product.name }}</h1>
 
-    <div>
+    <p class="text-muted mb-0">{{ product.category.name }}</p>
+  </div>
 
-        <h1>{{ product.name }}</h1>
+  <a
+    href="{{ url_for('admin.product_list') }}"
+    class="btn btn-outline-secondary"
+  >
+    <i class="bi bi-arrow-left"></i>
 
-        <p class="text-muted mb-0">
-
-            {{ product.category.name }}
-
-        </p>
-
-    </div>
-
-    <a
-        href="{{ url_for('admin.product_list') }}"
-        class="btn btn-outline-secondary">
-
-        <i class="bi bi-arrow-left"></i>
-
-        Back
-
-    </a>
-
+    Back
+  </a>
 </div>
 
 <div class="card shadow-sm border-0">
+  <div class="card-body">
+    <div class="row">
+      <div class="col-lg-4">
+        {% if product.primary_image %}
 
-<div class="card-body">
+        <img
+          src="{{ url_for('static', filename='uploads/products/' ~ product.primary_image) }}"
+          class="img-fluid rounded border"
+        />
 
-<div class="row">
+        {% else %}
 
-<div class="col-lg-4">
+        <div
+          class="border rounded d-flex align-items-center justify-content-center"
+          style="height: 300px"
+        >
+          No Image
+        </div>
 
-{% if product.primary_image %}
+        {% endif %}
+      </div>
 
-<img
-src="{{ url_for('static', filename='uploads/products/' ~ product.primary_image) }}"
-class="img-fluid rounded border">
+      <div class="col-lg-8">
+        <h4>Product Information</h4>
 
-{% else %}
+        <table class="table">
+          <tr>
+            <th width="220">Model Number</th>
+            <td>{{ product.model_number or "-" }}</td>
+          </tr>
 
-<div
-class="border rounded d-flex align-items-center justify-content-center"
-style="height:300px;">
+          <tr>
+            <th>Category</th>
+            <td>{{ product.category.name }}</td>
+          </tr>
 
-No Image
+          <tr>
+            <th>Status</th>
+            <td>
+              {% if product.published %}
+              <span class="badge bg-success">Published</span>
+              {% else %}
+              <span class="badge bg-secondary">Draft</span>
+              {% endif %}
+            </td>
+          </tr>
 
-</div>
+          <tr>
+            <th>Featured</th>
+            <td>
+              {% if product.featured %}
+              <span class="badge bg-warning text-dark">Yes</span>
+              {% else %} No {% endif %}
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <hr />
 
-{% endif %}
+   <h3 class="mb-4">Technical Specifications</h3>
 
-</div>
+{% if product.specifications %}
 
-<div class="col-lg-8">
+<table class="table table-bordered align-middle">
+    <thead>
+        <tr>
+            <th width="40%">Specification</th>
+            <th>Value</th>
+            <th width="100">Action</th>
+        </tr>
+    </thead>
 
-<h4>Product Information</h4>
+    <tbody>
 
-<table class="table">
+    {% for specification in product.specifications %}
 
-<tr>
-<th width="220">Model Number</th>
-<td>{{ product.model_number or "-" }}</td>
-</tr>
+        <tr>
 
-<tr>
-<th>Category</th>
-<td>{{ product.category.name }}</td>
-</tr>
+            <td>{{ specification.name }}</td>
 
-<tr>
-<th>Status</th>
-<td>
+            <td>{{ specification.value }}</td>
 
-{% if product.published %}
-<span class="badge bg-success">Published</span>
-{% else %}
-<span class="badge bg-secondary">Draft</span>
-{% endif %}
+            <td>
 
-</td>
-</tr>
+                <form
+                    method="POST"
+                    action="{{ url_for('admin.delete_specification', specification_id=specification.id) }}"
+                    onsubmit="return confirm('Delete this specification?');"
+                >
 
-<tr>
-<th>Featured</th>
-<td>
+                    <button
+                        type="submit"
+                        class="btn btn-sm btn-outline-danger"
+                    >
+                        <i class="bi bi-trash"></i>
+                    </button>
 
-{% if product.featured %}
-<span class="badge bg-warning text-dark">Yes</span>
-{% else %}
-No
-{% endif %}
+                </form>
 
-</td>
-</tr>
+            </td>
+
+        </tr>
+
+    {% endfor %}
+
+    </tbody>
 
 </table>
 
-</div>
+{% else %}
+
+<div class="alert alert-info">
+
+    No technical specifications added yet.
 
 </div>
 
-<hr>
+{% endif %}
 
-<h4>Short Description</h4>
+<div class="card mt-4">
 
-<p>
+    <div class="card-body">
 
-{{ product.short_description or "No short description." }}
+        <h5>Add Specification</h5>
 
-</p>
+        <form
+            method="POST"
+            action="{{ url_for('admin.create_specification', product_id=product.id) }}"
+        >
 
-<hr>
+            {{ specification_form.hidden_tag() }}
 
-<h4>Description</h4>
+            <div class="row">
 
-<p style="white-space: pre-line;">
+                <div class="col-md-4">
 
-{{ product.description or "No description." }}
+                    {{ specification_form.specification_name.label }}
 
-</p>
+                    {{ specification_form.specification_name(
+                        class="form-select",
+                        id="specification_name"
+                    ) }}
+
+                </div>
+
+                <div class="col-md-4" id="custom_name_group">
+
+                    {{ specification_form.custom_name.label }}
+
+                    {{ specification_form.custom_name(
+                        class="form-control",
+                        id="custom_name"
+                    ) }}
+
+                </div>
+
+                <div class="col-md-4">
+
+                    {{ specification_form.value.label }}
+
+                    {{ specification_form.value(
+                        class="form-control"
+                    ) }}
+
+                </div>
+
+            </div>
+
+            <div class="mt-3">
+
+                {{ specification_form.submit(class="btn btn-success") }}
+
+            </div>
+
+        </form>
+
+    </div>
 
 </div>
+    <hr />
 
+    <h4>Short Description</h4>
+
+    <p>{{ product.short_description or "No short description." }}</p>
+
+    <hr />
+
+    <h4>Description</h4>
+
+    <p style="white-space: pre-line">
+      {{ product.description or "No description." }}
+    </p>
+  </div>
 </div>
+
+{% endblock %} 
+{% block scripts %}
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const specification = document.getElementById("specification_name");
+    const customGroup = document.getElementById("custom_name_group");
+
+    function toggleCustomField() {
+      if (specification.value === "Other") {
+        customGroup.style.display = "block";
+      } else {
+        customGroup.style.display = "none";
+      }
+    }
+
+    toggleCustomField();
+
+    specification.addEventListener("change", toggleCustomField);
+  });
+</script>
 
 {% endblock %}

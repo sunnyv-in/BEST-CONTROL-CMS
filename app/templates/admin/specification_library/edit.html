@@ -1,0 +1,139 @@
+{% extends "admin/layout.html" %}
+
+{% block title %}
+Edit Specification
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+
+        <h1>Edit Specification</h1>
+
+        <p class="text-muted">
+
+            Update library specification.
+
+        </p>
+
+    </div>
+
+    <a
+        href="{{ url_for('admin.specification_list') }}"
+        class="btn btn-outline-secondary">
+
+        <i class="bi bi-arrow-left"></i>
+
+        Back
+
+    </a>
+
+</div>
+
+<hr>
+
+<div class="card shadow-sm border-0">
+
+<div class="card-body">
+
+<form method="POST">
+
+{{ form.hidden_tag() }}
+
+<div class="row g-4">
+
+<div class="col-md-6">
+
+{{ form.name.label(class="form-label") }}
+{{ form.name(class="form-control") }}
+
+</div>
+
+<div class="col-md-6">
+
+{{ form.group.label(class="form-label") }}
+{{ form.group(class="form-select") }}
+
+</div>
+
+<div class="col-md-4">
+
+{{ form.data_type.label(class="form-label") }}
+{{ form.data_type(class="form-select") }}
+
+</div>
+
+<div class="col-md-4">
+
+{{ form.unit.label(class="form-label") }}
+{{ form.unit(class="form-control", placeholder="V, VA, A, Hz, mm...") }}
+
+</div>
+
+<div class="col-md-4">
+
+{{ form.display_order.label(class="form-label") }}
+{{ form.display_order(class="form-control") }}
+
+</div>
+
+<div class="col-12">
+
+<h6 class="mb-3">
+
+Options
+
+</h6>
+
+<div class="form-check form-check-inline">
+
+{{ form.is_required(class="form-check-input") }}
+{{ form.is_required.label(class="form-check-label") }}
+
+</div>
+
+<div class="form-check form-check-inline">
+
+{{ form.is_filterable(class="form-check-input") }}
+{{ form.is_filterable.label(class="form-check-label") }}
+
+</div>
+
+<div class="form-check form-check-inline">
+
+{{ form.is_active(class="form-check-input") }}
+{{ form.is_active.label(class="form-check-label") }}
+
+</div>
+
+</div>
+
+</div>
+
+<hr>
+
+<button
+class="btn btn-primary"
+type="submit">
+
+Save Changes
+
+</button>
+
+<a
+href="{{ url_for('admin.specification_list') }}"
+class="btn btn-outline-secondary">
+
+Cancel
+
+</a>
+
+</form>
+
+</div>
+
+</div>
+
+{% endblock %}
