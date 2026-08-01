@@ -123,3 +123,63 @@ body {
 
     font-size:1.5rem;
 }
+
+.upload-card{
+
+    border:2px dashed #cfd8dc;
+
+    border-radius:14px;
+
+    height:270px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    text-align:center;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+    background:#fafafa;
+
+}
+
+.upload-card:hover{
+
+    border-color:#0d6efd;
+
+    background:#f3f8ff;
+
+}
+
+.image-preview-box{
+
+    border:1px solid #dee2e6;
+
+    border-radius:14px;
+
+    background:white;
+
+    height:270px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    overflow:hidden;
+
+}
+
+.image-preview-box img{
+
+    max-height:240px;
+
+    max-width:100%;
+
+}

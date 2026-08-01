@@ -15,17 +15,13 @@ from flask_login import login_required
 
 from app.admin import admin_bp
 from app.extensions import db
-from app.forms import ProductForm
 from app.models import (
     Product,
     Category,
     ProductSpecification,
 )
 
-import os
-from uuid import uuid4
-from werkzeug.utils import secure_filename
-
+from app.utils.file_upload import save_uploaded_file
 
 @admin_bp.route("/products")
 @login_required
@@ -36,6 +32,22 @@ def product_list():
     return render_template(
         "admin/products/index.html",
         products=products,
+    )
+
+@admin_bp.route("/products/editor", methods=["GET"])
+@login_required
+def product_editor():
+
+    form = ProductForm()
+
+    form.category_id.choices = [
+        (category.id, category.name)
+        for category in Category.query.order_by(Category.name)
+    ]
+
+    return render_template(
+        "admin/products/editor.html",
+        form=form,
     )
 
 
@@ -71,23 +83,9 @@ def create_product():
 
         if form.primary_image.data:
 
-            image = form.primary_image.data
-
-            filename = secure_filename(image.filename)
-
-            extension = os.path.splitext(filename)[1]
-
-            image_filename = f"{uuid4().hex}{extension}"
-
-            upload_folder = os.path.join(
-                current_app.root_path,
-                "static",
-                "uploads",
+            image_filename = save_uploaded_file(
+                form.primary_image.data,
                 "products",
-            )
-
-            image.save(
-                os.path.join(upload_folder, image_filename)
             )
 
         product = Product(
@@ -162,3 +160,4 @@ def delete_product(id):
     flash("Product deleted successfully.", "success")
 
     return redirect(url_for("admin.product_list"))
+

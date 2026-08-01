@@ -1,0 +1,61 @@
+{% extends "admin/layout.html" %} {% block title %} Product Editor {% endblock
+%} {% block content %}
+
+<div class="page-header">
+  <h1>Product Editor</h1>
+  <p>This is the new unified product editor.</p>
+</div>
+
+<div class="card shadow-sm border-0">
+  <div class="card-body">
+    <div class="card shadow-sm border-0 mb-4">
+      <div class="card-body">
+        <h3 class="mb-4">General Information</h3>
+
+        <div class="row g-4">
+          <div class="col-md-6">
+            {{ form.category_id.label(class="form-label fw-semibold") }} {{
+            form.category_id(class="form-select") }}
+          </div>
+
+          <div class="col-md-6">
+            {{ form.name.label(class="form-label fw-semibold") }} {{ form.name(
+            class="form-control", id="product_name" ) }}
+          </div>
+
+          <div class="col-md-6">
+            {{ form.slug.label(class="form-label fw-semibold") }} {{ form.slug(
+            class="form-control", id="slug" ) }}
+
+            <small class="text-muted">
+              Automatically generated from product name
+            </small>
+          </div>
+
+          <div class="col-md-6">
+            {{ form.model_number.label(class="form-label fw-semibold") }} {{
+            form.model_number(class="form-control") }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  const imageInput = document.getElementById("primary_image");
+  const preview = document.getElementById("preview-image");
+  const placeholder = document.getElementById("preview-placeholder");
+
+  imageInput.addEventListener("change", function () {
+    const file = this.files[0];
+
+    if (file) {
+      preview.src = URL.createObjectURL(file);
+
+      preview.classList.remove("d-none");
+
+      placeholder.classList.add("d-none");
+    }
+  });
+</script>
+{% endblock %}

@@ -19,6 +19,13 @@ class Product(TimestampMixin, BaseModel):
         nullable=False
     )
 
+    gallery = db.relationship(
+    "ProductImage",
+    back_populates="product",
+    cascade="all, delete-orphan",
+    order_by="ProductImage.display_order",
+)
+
     name = db.Column(
         db.String(150),
         nullable=False
