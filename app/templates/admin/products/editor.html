@@ -288,6 +288,159 @@
         </div>
       </div>
     </div>
+    <!-- ========================= -->
+    <!-- Product Documents -->
+    <!-- ========================= -->
+
+    <div class="card shadow-sm border-0 mb-4">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <div>
+            <h4 class="mb-1">Product Documents</h4>
+
+            <small class="text-muted">
+              Upload datasheets, manuals, certificates and other PDFs.
+            </small>
+          </div>
+
+          <div class="d-flex gap-2">
+            <button
+              type="button"
+              class="btn btn-primary"
+              id="add-library-document"
+            >
+              <i class="bi bi-plus-lg"></i>
+
+              Library Document
+            </button>
+
+            <button
+              type="button"
+              class="btn btn-outline-primary"
+              id="add-custom-document"
+            >
+              <i class="bi bi-plus-lg"></i>
+
+              Custom Document
+            </button>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-bordered align-middle">
+            <thead class="table-light">
+              <tr>
+                <th width="25%">Document Type</th>
+
+                <th width="30%">Display Name</th>
+
+                <th>PDF File</th>
+
+                <th width="90">Action</th>
+              </tr>
+            </thead>
+
+            <tbody id="documents-body">
+              <tr id="empty-document-row">
+                <td colspan="4" class="text-center py-5 text-muted">
+                  <i class="bi bi-file-earmark-pdf fs-1 d-block mb-3"></i>
+
+                  <h5>No Documents Added</h5>
+
+                  <p>Upload PDFs for this product.</p>
+                </td>
+              </tr>
+            </tbody>
+            <template id="library-document-template">
+              <tr>
+                <td>
+                  <select
+                    class="form-select document-library-select"
+                    name="document_library_id[]"
+                  >
+                    <option value="">Select Document Type</option>
+
+                    {% for document in documents %}
+
+                    <option value="{{ document.id }}">
+                      {{ document.name }}
+                    </option>
+
+                    {% endfor %}
+                  </select>
+                </td>
+
+                <td>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="document_display_name[]"
+                    placeholder="Display Name"
+                  />
+                </td>
+
+                <td>
+                  <input
+                    type="file"
+                    class="form-control"
+                    name="document_file[]"
+                    accept=".pdf"
+                  />
+                </td>
+
+                <td class="text-center">
+                  <button
+                    type="button"
+                    class="btn btn-outline-danger remove-document"
+                  >
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            </template>
+            <template id="custom-document-template">
+              <tr>
+                <td>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="custom_document_type[]"
+                    placeholder="Example: Test Report"
+                  />
+                </td>
+
+                <td>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="custom_document_display_name[]"
+                    placeholder="Display Name"
+                  />
+                </td>
+
+                <td>
+                  <input
+                    type="file"
+                    class="form-control"
+                    name="custom_document_file[]"
+                    accept=".pdf"
+                  />
+                </td>
+
+                <td class="text-center">
+                  <button
+                    type="button"
+                    class="btn btn-outline-danger remove-document"
+                  >
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            </template>
+          </table>
+        </div>
+      </div>
+    </div>
 
     <!-- ========================= -->
     <!-- SEO -->

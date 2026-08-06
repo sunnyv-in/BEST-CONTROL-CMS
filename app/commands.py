@@ -4,6 +4,8 @@ from app.services.specification_seed import seed_specifications
 
 from app.extensions import db
 
+from app.services.document_seed import seed_documents
+
 
 def register_commands(app):
 
@@ -47,3 +49,10 @@ def register_commands(app):
         seed_specifications()
 
         click.echo("✅ Specification Library seeded successfully.")
+
+    @app.cli.command("seed-documents")
+    def seed_documents_command():
+
+        seed_documents()
+
+        click.echo("✅ Document Library seeded successfully.")

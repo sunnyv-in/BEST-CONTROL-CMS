@@ -13,6 +13,13 @@ class Product(TimestampMixin, BaseModel):
     order_by="ProductSpecification.display_order"
     )
 
+    documents = db.relationship(
+    "ProductDocument",
+    back_populates="product",
+    cascade="all, delete-orphan",
+    lazy=True,
+    )
+
     category_id = db.Column(
         db.Integer,
         db.ForeignKey("categories.id"),
@@ -24,7 +31,7 @@ class Product(TimestampMixin, BaseModel):
     back_populates="product",
     cascade="all, delete-orphan",
     order_by="ProductImage.display_order",
-)
+    )
 
     name = db.Column(
         db.String(150),

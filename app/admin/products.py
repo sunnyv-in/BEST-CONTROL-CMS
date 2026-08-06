@@ -3,8 +3,9 @@ from flask import (
     redirect,
     url_for,
     flash,
+    request,
 )
-from app.services.product_service import create_product as create_product_service
+
 from flask_login import login_required
 
 from app.admin import admin_bp
@@ -15,39 +16,40 @@ from app.forms import ProductForm
 from app.models import (
     Product,
     Category,
+    DocumentLibrary,
 )
 
-from app.models import (
-    Product,
-    Category,
-    ProductSpecification,
-    SpecificationLibrary,
+from app.services.product_service import (
+    create_product as create_product_service,
 )
-
-from flask import (
-    render_template,
-    redirect,
-    url_for,
-    flash,
-    request,
-)
-
-from app.utils.file_upload import save_uploaded_file
 
 from app.services.specification_service import (
     get_active_specifications,
 )
 
+
+# ==========================================
+# Product List
+# ==========================================
+
 @admin_bp.route("/products")
 @login_required
 def product_list():
 
-    products = Product.query.order_by(Product.name).all()
+    products = Product.query.order_by(
+        Product.name
+    ).all()
 
     return render_template(
         "admin/products/index.html",
         products=products,
     )
+
+
+# ==========================================
+# New Product
+# ==========================================
+
 @admin_bp.route("/products/new", methods=["GET"])
 @login_required
 def new_product():
@@ -61,11 +63,21 @@ def new_product():
 
     specifications = get_active_specifications()
 
+    documents = DocumentLibrary.query.order_by(
+        DocumentLibrary.display_order
+    ).all()
+
     return render_template(
-    "admin/products/editor.html",
-    form=form,
-    specifications=specifications,
-)
+        "admin/products/editor.html",
+        form=form,
+        specifications=specifications,
+        documents=documents,
+    )
+
+
+# ==========================================
+# Create Product
+# ==========================================
 
 @admin_bp.route("/products/create", methods=["POST"])
 @login_required
@@ -78,6 +90,12 @@ def create_product():
         for category in Category.query.order_by(Category.name)
     ]
 
+    specifications = get_active_specifications()
+
+    documents = DocumentLibrary.query.order_by(
+        DocumentLibrary.display_order
+    ).all()
+
     if not form.validate_on_submit():
 
         flash(
@@ -88,11 +106,13 @@ def create_product():
         return render_template(
             "admin/products/editor.html",
             form=form,
+            specifications=specifications,
+            documents=documents,
         )
 
     create_product_service(
-    form,
-    request,
+        form,
+        request,
     )
 
     flash(
@@ -105,6 +125,10 @@ def create_product():
     )
 
 
+# ==========================================
+# Delete Product
+# ==========================================
+
 @admin_bp.route("/products/<int:id>/delete", methods=["POST"])
 @login_required
 def delete_product(id):
@@ -112,9 +136,14 @@ def delete_product(id):
     product = Product.query.get_or_404(id)
 
     db.session.delete(product)
+
     db.session.commit()
 
-    flash("Product deleted successfully.", "success")
+    flash(
+        "Product deleted successfully.",
+        "success",
+    )
 
-    return redirect(url_for("admin.product_list"))
-
+    return redirect(
+        url_for("admin.product_list")
+    )

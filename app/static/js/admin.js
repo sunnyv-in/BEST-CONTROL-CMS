@@ -131,3 +131,94 @@ Click one of the buttons above to begin.
     restoreEmptyRow();
   });
 }
+// ======================================
+// Product Documents
+// ======================================
+
+const addLibraryDocumentBtn = document.getElementById("add-library-document");
+
+const addCustomDocumentBtn = document.getElementById("add-custom-document");
+
+const documentsBody = document.getElementById("documents-body");
+
+const libraryDocumentTemplate = document.getElementById(
+  "library-document-template",
+);
+
+const customDocumentTemplate = document.getElementById(
+  "custom-document-template",
+);
+
+// -------------------------
+// Add Library Document
+// -------------------------
+
+if (addLibraryDocumentBtn && documentsBody && libraryDocumentTemplate) {
+  addLibraryDocumentBtn.addEventListener("click", function () {
+    const emptyRow = document.getElementById("empty-document-row");
+
+    if (emptyRow) {
+      emptyRow.remove();
+    }
+
+    const clone = libraryDocumentTemplate.content.cloneNode(true);
+
+    documentsBody.appendChild(clone);
+  });
+}
+
+// -------------------------
+// Add Custom Document
+// -------------------------
+
+if (addCustomDocumentBtn && documentsBody && customDocumentTemplate) {
+  addCustomDocumentBtn.addEventListener("click", function () {
+    const emptyRow = document.getElementById("empty-document-row");
+
+    if (emptyRow) {
+      emptyRow.remove();
+    }
+
+    const clone = customDocumentTemplate.content.cloneNode(true);
+
+    documentsBody.appendChild(clone);
+  });
+}
+
+// -------------------------
+// Remove Document
+// -------------------------
+
+document.addEventListener("click", function (event) {
+  const removeButton = event.target.closest(".remove-document");
+
+  if (!removeButton) {
+    return;
+  }
+
+  removeButton.closest("tr").remove();
+
+  if (documentsBody.children.length === 0) {
+    documentsBody.innerHTML = `
+
+<tr id="empty-document-row">
+
+<td colspan="4" class="text-center py-5 text-muted">
+
+<i class="bi bi-file-earmark-pdf fs-1 d-block mb-3"></i>
+
+<h5>No Documents Added</h5>
+
+<p>
+
+Upload PDFs for this product.
+
+</p>
+
+</td>
+
+</tr>
+
+`;
+  }
+});

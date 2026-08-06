@@ -4,3 +4,5 @@ from .product import Product
 from .product_specification import ProductSpecification
 from .specification_library import SpecificationLibrary
 from .product_image import ProductImage
+from .document_library import DocumentLibrary
+from .product_document import ProductDocument
