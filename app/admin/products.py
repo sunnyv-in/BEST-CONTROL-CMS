@@ -3,25 +3,40 @@ from flask import (
     redirect,
     url_for,
     flash,
-    current_app,
 )
-
-from app.forms import (
-    ProductForm,
-    ProductSpecificationForm,
-)
-
+from app.services.product_service import create_product as create_product_service
 from flask_login import login_required
 
 from app.admin import admin_bp
 from app.extensions import db
+
+from app.forms import ProductForm
+
+from app.models import (
+    Product,
+    Category,
+)
+
 from app.models import (
     Product,
     Category,
     ProductSpecification,
+    SpecificationLibrary,
+)
+
+from flask import (
+    render_template,
+    redirect,
+    url_for,
+    flash,
+    request,
 )
 
 from app.utils.file_upload import save_uploaded_file
+
+from app.services.specification_service import (
+    get_active_specifications,
+)
 
 @admin_bp.route("/products")
 @login_required
@@ -33,10 +48,9 @@ def product_list():
         "admin/products/index.html",
         products=products,
     )
-
-@admin_bp.route("/products/editor", methods=["GET"])
+@admin_bp.route("/products/new", methods=["GET"])
 @login_required
-def product_editor():
+def new_product():
 
     form = ProductForm()
 
@@ -45,28 +59,15 @@ def product_editor():
         for category in Category.query.order_by(Category.name)
     ]
 
-    return render_template(
-        "admin/products/editor.html",
-        form=form,
-    )
-
-
-@admin_bp.route("/products/<int:id>")
-@login_required
-def view_product(id):
-
-    product = Product.query.get_or_404(id)
-
-    specification_form = ProductSpecificationForm()
+    specifications = get_active_specifications()
 
     return render_template(
-        "admin/products/view.html",
-        product=product,
-        specification_form=specification_form,
-    )
+    "admin/products/editor.html",
+    form=form,
+    specifications=specifications,
+)
 
-
-@admin_bp.route("/products/create", methods=["GET", "POST"])
+@admin_bp.route("/products/create", methods=["POST"])
 @login_required
 def create_product():
 
@@ -77,76 +78,32 @@ def create_product():
         for category in Category.query.order_by(Category.name)
     ]
 
-    if form.validate_on_submit():
+    if not form.validate_on_submit():
 
-        image_filename = None
-
-        if form.primary_image.data:
-
-            image_filename = save_uploaded_file(
-                form.primary_image.data,
-                "products",
-            )
-
-        product = Product(
-            category_id=form.category_id.data,
-            name=form.name.data,
-            slug=form.slug.data,
-            model_number=form.model_number.data,
-            short_description=form.short_description.data,
-            description=form.description.data,
-            featured=form.featured.data,
-            published=form.published.data,
-            primary_image=image_filename,
+        flash(
+            "Please correct the errors in the form.",
+            "danger",
         )
 
-        db.session.add(product)
-        db.session.commit()
+        return render_template(
+            "admin/products/editor.html",
+            form=form,
+        )
 
-        flash("Product created successfully.", "success")
-
-        return redirect(url_for("admin.product_list"))
-
-    return render_template(
-        "admin/products/create.html",
-        form=form,
+    create_product_service(
+    form,
+    request,
     )
 
-@admin_bp.route("/products/<int:id>/edit", methods=["GET", "POST"])
-@login_required
-def edit_product(id):
-
-    product = Product.query.get_or_404(id)
-
-    form = ProductForm(obj=product)
-
-    form.category_id.choices = [
-        (category.id, category.name)
-        for category in Category.query.order_by(Category.name)
-    ]
-
-    if form.validate_on_submit():
-
-        product.category_id = form.category_id.data
-        product.name = form.name.data
-        product.slug = form.slug.data
-        product.model_number = form.model_number.data
-        product.short_description = form.short_description.data
-        product.description = form.description.data
-        product.featured = form.featured.data
-        product.published = form.published.data
-
-        db.session.commit()
-
-        flash("Product updated successfully.", "success")
-
-        return redirect(url_for("admin.product_list"))
-
-    return render_template(
-        "admin/products/edit.html",
-        form=form,
-        product=product,
+    flash(
+        "Product created successfully.",
+        "success",
     )
+
+    return redirect(
+        url_for("admin.product_list")
+    )
+
 
 @admin_bp.route("/products/<int:id>/delete", methods=["POST"])
 @login_required

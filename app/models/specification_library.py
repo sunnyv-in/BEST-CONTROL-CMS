@@ -51,5 +51,10 @@ class SpecificationLibrary(TimestampMixin, BaseModel):
         nullable=False,
     )
 
+    product_specifications = db.relationship(
+    "ProductSpecification",
+    back_populates="specification",
+)
+
     def __repr__(self):
         return f"<SpecificationLibrary {self.name}>"

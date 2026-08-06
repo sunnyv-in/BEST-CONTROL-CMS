@@ -1,16 +1,81 @@
 {% extends "admin/layout.html" %} {% block title %} Product Editor {% endblock
 %} {% block content %}
+<form
+  method="POST"
+  action="{{ url_for('admin.create_product') }}"
+  enctype="multipart/form-data"
+>
+  {{ form.hidden_tag() }}
 
-<div class="page-header">
-  <h1>Product Editor</h1>
-  <p>This is the new unified product editor.</p>
-</div>
+  <div class="container-fluid py-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h1 class="fw-bold mb-1">Product Editor</h1>
+        <p class="text-muted mb-0">
+          Create and manage products from one place.
+        </p>
+      </div>
 
-<div class="card shadow-sm border-0">
-  <div class="card-body">
+      <div>
+        <a
+          href="{{ url_for('admin.product_list') }}"
+          class="btn btn-outline-secondary"
+        >
+          Cancel
+        </a>
+
+        <button type="submit" class="btn btn-success ms-2">Save Product</button>
+      </div>
+    </div>
+
+    <!-- ========================= -->
+    <!-- Images -->
+    <!-- ========================= -->
+
     <div class="card shadow-sm border-0 mb-4">
       <div class="card-body">
-        <h3 class="mb-4">General Information</h3>
+        <h4 class="mb-4">Product Images</h4>
+
+        <div class="row">
+          <div class="col-lg-5">
+            {{ form.primary_image( class="d-none", id="primary_image" ) }}
+
+            <label for="primary_image" class="upload-box">
+              <i class="bi bi-cloud-arrow-up fs-1"></i>
+
+              <h5 class="mt-3">Upload Product Image</h5>
+
+              <p class="text-muted">Drag & Drop or Click</p>
+            </label>
+          </div>
+
+          <div class="col-lg-7">
+            <div
+              class="preview-box d-flex align-items-center justify-content-center"
+            >
+              <img
+                id="preview-image"
+                class="img-fluid d-none"
+                style="max-height: 250px"
+              />
+
+              <span id="preview-placeholder" class="text-muted">
+                Image Preview
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================= -->
+    <!-- General Information -->
+    <!-- ========================= -->
+
+    <div class="card shadow-sm border-0 mb-4">
+      <div class="card-body p-4">
+        <h4 class="mb-4">General Information</h4>
 
         <div class="row g-4">
           <div class="col-md-6">
@@ -20,42 +85,228 @@
 
           <div class="col-md-6">
             {{ form.name.label(class="form-label fw-semibold") }} {{ form.name(
-            class="form-control", id="product_name" ) }}
+            class="form-control", id="product_name", placeholder="Enter product
+            name" ) }}
           </div>
 
           <div class="col-md-6">
             {{ form.slug.label(class="form-label fw-semibold") }} {{ form.slug(
-            class="form-control", id="slug" ) }}
+            class="form-control", id="slug", placeholder="product-url-slug" ) }}
 
             <small class="text-muted">
-              Automatically generated from product name
+              Automatically generated from Product Name
             </small>
           </div>
 
           <div class="col-md-6">
             {{ form.model_number.label(class="form-label fw-semibold") }} {{
-            form.model_number(class="form-control") }}
+            form.model_number( class="form-control", placeholder="Example:
+            BCT100VA1" ) }}
+          </div>
+
+          <div class="col-md-6">
+            <div class="form-check form-switch mt-4">
+              {{ form.featured(class="form-check-input") }} {{
+              form.featured.label(class="form-check-label") }}
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="form-check form-switch mt-4">
+              {{ form.published(class="form-check-input") }} {{
+              form.published.label(class="form-check-label") }}
+            </div>
           </div>
         </div>
       </div>
     </div>
+
+    <!-- ========================= -->
+    <!-- Description -->
+    <!-- ========================= -->
+
+    <div class="card shadow-sm border-0 mb-4">
+      <div class="card-body">
+        <h4 class="mb-4">Product Description</h4>
+
+        {{ form.short_description.label(class="form-label fw-semibold") }} {{
+        form.short_description( class="form-control", rows="6",
+        placeholder="Describe the product, its applications, features and
+        benefits..." ) }}
+      </div>
+    </div>
+
+    <!-- ========================= -->
+    <!-- Technical Specifications -->
+    <!-- ========================= -->
+
+    <div class="card shadow-sm border-0 mb-4">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <div>
+            <h4 class="mb-1">Technical Specifications</h4>
+            <small class="text-muted">
+              Add important technical details of the product.
+            </small>
+          </div>
+
+          <div class="d-flex gap-2">
+            <button
+              type="button"
+              class="btn btn-primary"
+              id="add-library-specification"
+            >
+              <i class="bi bi-plus-lg"></i>
+              Library Specification
+            </button>
+
+            <button
+              type="button"
+              class="btn btn-outline-primary"
+              id="add-custom-specification"
+            >
+              <i class="bi bi-plus-lg"></i>
+              Custom Specification
+            </button>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-bordered align-middle mb-0">
+            <thead class="table-light">
+              <tr>
+                <th width="40%">Specification</th>
+
+                <th>Value</th>
+
+                <th width="90" class="text-center">Action</th>
+              </tr>
+            </thead>
+
+            <tbody id="specifications-body">
+              <tr id="empty-row">
+                <td colspan="3" class="text-center py-5 text-muted">
+                  <i class="bi bi-list-ul fs-1 d-block mb-3"></i>
+
+                  <h5>No Specifications Added</h5>
+
+                  <p class="mb-0">
+                    Click
+                    <strong>Add Specification</strong>
+                    to add technical details.
+                  </p>
+                </td>
+              </tr>
+            </tbody>
+            <tbody id="specifications-body">
+              <tr id="empty-row">
+                <td colspan="3" class="text-center py-5 text-muted">
+                  <i class="bi bi-list-ul fs-1 d-block mb-3"></i>
+
+                  <h5>No Specifications Added</h5>
+
+                  <p>Click one of the buttons above to begin.</p>
+                </td>
+              </tr>
+            </tbody>
+
+            <!-- ====================================== -->
+            <!-- Library Specification Template -->
+            <!-- ====================================== -->
+
+            <template id="library-specification-template">
+              <tr>
+                <td>
+                  <select class="form-select" name="specification_id[]">
+                    <option value="">Select Specification</option>
+
+                    {% for specification in specifications %}
+
+                    <option value="{{ specification.id }}">
+                      {{ specification.group }} → {{ specification.name }}
+                    </option>
+
+                    {% endfor %}
+                  </select>
+                </td>
+
+                <td>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="specification_value[]"
+                    placeholder="Enter Value"
+                  />
+                </td>
+
+                <td class="text-center">
+                  <button
+                    type="button"
+                    class="btn btn-outline-danger remove-specification"
+                  >
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            </template>
+
+            <!-- ====================================== -->
+            <!-- Custom Specification Template -->
+            <!-- ====================================== -->
+
+            <template id="custom-specification-template">
+              <tr>
+                <td>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="custom_specification_name[]"
+                    placeholder="Specification Name"
+                  />
+                </td>
+
+                <td>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="custom_specification_value[]"
+                    placeholder="Enter Value"
+                  />
+                </td>
+
+                <td class="text-center">
+                  <button
+                    type="button"
+                    class="btn btn-outline-danger remove-specification"
+                  >
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            </template>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================= -->
+    <!-- SEO -->
+    <!-- ========================= -->
+
+    <div class="card shadow-sm border-0">
+      <div class="card-body">
+        <h4 class="mb-4">SEO</h4>
+
+        <div class="row">
+          <div class="col-12 mb-3">Meta Title</div>
+
+          <div class="col-12 mb-3">Meta Description</div>
+
+          <div class="col-12">Keywords</div>
+        </div>
+      </div>
+    </div>
   </div>
-</div>
-<script>
-  const imageInput = document.getElementById("primary_image");
-  const preview = document.getElementById("preview-image");
-  const placeholder = document.getElementById("preview-placeholder");
+</form>
 
-  imageInput.addEventListener("change", function () {
-    const file = this.files[0];
-
-    if (file) {
-      preview.src = URL.createObjectURL(file);
-
-      preview.classList.remove("d-none");
-
-      placeholder.classList.add("d-none");
-    }
-  });
-</script>
 {% endblock %}

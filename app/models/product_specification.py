@@ -8,29 +8,42 @@ class ProductSpecification(TimestampMixin, BaseModel):
     product_id = db.Column(
         db.Integer,
         db.ForeignKey("products.id"),
-        nullable=False
+        nullable=False,
     )
 
-    name = db.Column(
-        db.String(120),
-        nullable=False
-    )
+    specification_library_id = db.Column(
+    db.Integer,
+    db.ForeignKey("specification_library.id"),
+    nullable=True,
+)
+    custom_name = db.Column(
+    db.String(120),
+    nullable=True,
+)
 
     value = db.Column(
-        db.String(255),
-        nullable=False
-    )
+    db.Text,
+    nullable=False,
+)
 
     display_order = db.Column(
         db.Integer,
         default=0,
-        nullable=False
+        nullable=False,
     )
 
+    # Relationship with Product
     product = db.relationship(
         "Product",
-        back_populates="specifications"
+        back_populates="specifications",
+    )
+
+    # Relationship with Specification Library
+    specification = db.relationship(
+        "SpecificationLibrary",
+        back_populates="product_specifications",
+        lazy="joined",
     )
 
     def __repr__(self):
-        return f"<ProductSpecification {self.name}>"
+        return f"<ProductSpecification {self.value}>"

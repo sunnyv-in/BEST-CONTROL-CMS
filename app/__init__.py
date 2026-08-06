@@ -1,5 +1,5 @@
 from flask import Flask
-
+from app.commands import register_commands
 from config import Config
 from app.extensions import db, login_manager, migrate
 
@@ -25,6 +25,9 @@ def create_app():
     login_manager.init_app(app)
 
     migrate.init_app(app, db)
+
+    # Register CLI Commands
+    register_commands(app)
 
     # Import models (required for Flask-Migrate)
     from app import models
