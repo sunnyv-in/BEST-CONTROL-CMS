@@ -10,20 +10,6 @@ def save_product_specifications(product, request):
     custom_names = request.form.getlist("custom_specification_name[]")
     custom_values = request.form.getlist("custom_specification_value[]")
 
-    print("\n========== SPEC DEBUG ==========")
-    print("specification_id[]")
-    print(specification_ids)
-
-    print("\nspecification_value[]")
-    print(specification_values)
-
-    print("\ncustom_specification_name[]")
-    print(custom_names)
-
-    print("\ncustom_specification_value[]")
-    print(custom_values)
-    print("================================\n")
-
     # ---------------------------------------
     # Library Specifications
     # ---------------------------------------
