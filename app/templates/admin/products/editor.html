@@ -1,10 +1,10 @@
 {% extends "admin/layout.html" %} {% block title %} Product Editor {% endblock
 %} {% block content %}
-<form
-  method="POST"
-  action="{{ url_for('admin.create_product') }}"
-  enctype="multipart/form-data"
->
+<form method="POST" enctype="multipart/form-data" action="{% if edit_mode %}
+                {{ url_for('admin.update_product_route', id=product.id) }}
+            {% else %}
+                {{ url_for('admin.create_product') }}
+            {% endif %}">enctype="multipart/form-data">
   {{ form.hidden_tag() }}
 
   <div class="container-fluid py-4">
@@ -18,10 +18,7 @@
       </div>
 
       <div>
-        <a
-          href="{{ url_for('admin.product_list') }}"
-          class="btn btn-outline-secondary"
-        >
+        <a href="{{ url_for('admin.product_list') }}" class="btn btn-outline-secondary">
           Cancel
         </a>
 
@@ -51,18 +48,24 @@
           </div>
 
           <div class="col-lg-7">
-            <div
-              class="preview-box d-flex align-items-center justify-content-center"
-            >
-              <img
-                id="preview-image"
-                class="img-fluid d-none"
-                style="max-height: 250px"
-              />
+            <div class="preview-box d-flex align-items-center justify-content-center">
+              {% if edit_mode and product.primary_image %}
 
-              <span id="preview-placeholder" class="text-muted">
+              <img id="preview-image" class="img-fluid"
+                src="{{ url_for('static', filename='uploads/products/' ~ product.primary_image) }}"
+                style="max-height: 250px" />
+
+              <span id="preview-placeholder" class="d-none">
                 Image Preview
               </span>
+
+              {% else %}
+
+              <img id="preview-image" class="img-fluid d-none" style="max-height: 250px" />
+
+              <span id="preview-placeholder"> Image Preview </span>
+
+              {% endif %}
             </div>
           </div>
         </div>
@@ -151,20 +154,12 @@
           </div>
 
           <div class="d-flex gap-2">
-            <button
-              type="button"
-              class="btn btn-primary"
-              id="add-library-specification"
-            >
+            <button type="button" class="btn btn-primary" id="add-library-specification">
               <i class="bi bi-plus-lg"></i>
               Library Specification
             </button>
 
-            <button
-              type="button"
-              class="btn btn-outline-primary"
-              id="add-custom-specification"
-            >
+            <button type="button" class="btn btn-outline-primary" id="add-custom-specification">
               <i class="bi bi-plus-lg"></i>
               Custom Specification
             </button>
@@ -184,21 +179,59 @@
             </thead>
 
             <tbody id="specifications-body">
-              <tr id="empty-row">
-                <td colspan="3" class="text-center py-5 text-muted">
-                  <i class="bi bi-list-ul fs-1 d-block mb-3"></i>
+              {% if edit_mode and product.specifications %} {% for spec in
+              product.specifications %}
 
-                  <h5>No Specifications Added</h5>
+              <tr>
+                <td>
+                  {% if spec.specification_library_id %}
 
-                  <p class="mb-0">
-                    Click
-                    <strong>Add Specification</strong>
-                    to add technical details.
-                  </p>
+                  <select class="form-select" name="specification_id[]">
+                    <option value="">Select Specification</option>
+
+                    {% for item in specifications %}
+
+                    <option value="{{ item.id }}" {% if item.id==spec.specification_library_id %}selected{% endif %}>
+                      {{ item.group }} → {{ item.name }}
+                    </option>
+
+                    {% endfor %}
+                  </select>
+
+                  <input type="hidden" name="custom_specification_name[]" value="" />
+
+                  {% else %}
+
+                  <input type="text" class="form-control" name="custom_specification_name[]"
+                    value="{{ spec.custom_name }}" placeholder="Specification Name" />
+
+                  <input type="hidden" name="specification_id[]" value="custom" />
+
+                  {% endif %}
+                </td>
+
+                <td>
+                  {% if spec.specification_library_id %}
+
+                  <input type="text" class="form-control" name="specification_value[]" value="{{ spec.value }}" />
+
+                  {% else %}
+
+                  <input type="text" class="form-control" name="custom_specification_value[]"
+                    value="{{ spec.value }}" />
+
+                  {% endif %}
+                </td>
+
+                <td class="text-center">
+                  <button type="button" class="btn btn-outline-danger remove-specification">
+                    <i class="bi bi-trash"></i>
+                  </button>
                 </td>
               </tr>
-            </tbody>
-            <tbody id="specifications-body">
+
+              {% endfor %} {% else %}
+
               <tr id="empty-row">
                 <td colspan="3" class="text-center py-5 text-muted">
                   <i class="bi bi-list-ul fs-1 d-block mb-3"></i>
@@ -208,6 +241,8 @@
                   <p>Click one of the buttons above to begin.</p>
                 </td>
               </tr>
+
+              {% endif %}
             </tbody>
 
             <!-- ====================================== -->
@@ -231,19 +266,11 @@
                 </td>
 
                 <td>
-                  <input
-                    type="text"
-                    class="form-control"
-                    name="specification_value[]"
-                    placeholder="Enter Value"
-                  />
+                  <input type="text" class="form-control" name="specification_value[]" placeholder="Enter Value" />
                 </td>
 
                 <td class="text-center">
-                  <button
-                    type="button"
-                    class="btn btn-outline-danger remove-specification"
-                  >
+                  <button type="button" class="btn btn-outline-danger remove-specification">
                     <i class="bi bi-trash"></i>
                   </button>
                 </td>
@@ -257,28 +284,17 @@
             <template id="custom-specification-template">
               <tr>
                 <td>
-                  <input
-                    type="text"
-                    class="form-control"
-                    name="custom_specification_name[]"
-                    placeholder="Specification Name"
-                  />
+                  <input type="text" class="form-control" name="custom_specification_name[]"
+                    placeholder="Specification Name" />
                 </td>
 
                 <td>
-                  <input
-                    type="text"
-                    class="form-control"
-                    name="custom_specification_value[]"
-                    placeholder="Enter Value"
-                  />
+                  <input type="text" class="form-control" name="custom_specification_value[]"
+                    placeholder="Enter Value" />
                 </td>
 
                 <td class="text-center">
-                  <button
-                    type="button"
-                    class="btn btn-outline-danger remove-specification"
-                  >
+                  <button type="button" class="btn btn-outline-danger remove-specification">
                     <i class="bi bi-trash"></i>
                   </button>
                 </td>
@@ -304,21 +320,13 @@
           </div>
 
           <div class="d-flex gap-2">
-            <button
-              type="button"
-              class="btn btn-primary"
-              id="add-library-document"
-            >
+            <button type="button" class="btn btn-primary" id="add-library-document">
               <i class="bi bi-plus-lg"></i>
 
               Library Document
             </button>
 
-            <button
-              type="button"
-              class="btn btn-outline-primary"
-              id="add-custom-document"
-            >
+            <button type="button" class="btn btn-outline-primary" id="add-custom-document">
               <i class="bi bi-plus-lg"></i>
 
               Custom Document
@@ -341,23 +349,164 @@
             </thead>
 
             <tbody id="documents-body">
+
+              {% if edit_mode and product.documents %}
+
+              {% for document in product.documents %}
+
+              <tr>
+
+                <input type="hidden" name="delete_document[]" class="delete-document-flag" value="0">
+
+                {% if document.document_library_id %}
+
+                <input type="hidden" name="product_document_id[]" value="{{ document.id }}">
+
+                <input type="hidden" name="custom_product_document_id[]" value="">
+
+                {% else %}
+
+                <input type="hidden" name="product_document_id[]" value="">
+
+                <input type="hidden" name="custom_product_document_id[]" value="{{ document.id }}">
+
+                {% endif %}
+
+                <!-- ==================== -->
+                <!-- Document Type -->
+                <!-- ==================== -->
+
+                <td>
+
+                  {% if document.document_library_id %}
+
+                  <select class="form-select" name="document_library_id[]">
+
+                    <option value="">
+                      Select Document Type
+                    </option>
+
+                    {% for item in documents %}
+
+                    <option value="{{ item.id }}" {% if item.id==document.document_library_id %} selected {% endif %}>
+
+                      {{ item.name }}
+
+                    </option>
+
+                    {% endfor %}
+
+                  </select>
+
+                  <input type="hidden" name="custom_document_type[]" value="">
+
+                  {% else %}
+
+                  <input type="hidden" name="document_library_id[]" value="">
+
+                  <input type="text" class="form-control" name="custom_document_type[]"
+                    value="{{ document.custom_type }}" placeholder="Document Type">
+
+                  {% endif %}
+
+                </td>
+
+                <!-- ==================== -->
+                <!-- Display Name -->
+                <!-- ==================== -->
+
+                <td>
+
+                  {% if document.document_library_id %}
+
+                  <input type="text" class="form-control" name="document_display_name[]"
+                    value="{{ document.display_name }}">
+
+                  <input type="hidden" name="custom_document_display_name[]" value="">
+
+                  {% else %}
+
+                  <input type="hidden" name="document_display_name[]" value="">
+
+                  <input type="text" class="form-control" name="custom_document_display_name[]"
+                    value="{{ document.display_name }}">
+
+                  {% endif %}
+
+                </td>
+
+                <!-- ==================== -->
+                <!-- PDF -->
+                <!-- ==================== -->
+
+                <td>
+
+                  <a href="{{ url_for('static', filename=document.file_path) }}" target="_blank"
+                    class="btn btn-sm btn-outline-primary mb-2">
+
+                    {{ document.file_name }}
+
+                  </a>
+
+                  {% if document.document_library_id %}
+
+                  <input type="file" class="form-control" name="document_file[]" accept=".pdf">
+
+                  <input type="hidden" name="custom_document_file[]">
+
+                  {% else %}
+
+                  <input type="hidden" name="document_file[]">
+
+                  <input type="file" class="form-control" name="custom_document_file[]" accept=".pdf">
+
+                  {% endif %}
+
+                </td>
+
+                <!-- ==================== -->
+                <!-- Delete -->
+                <!-- ==================== -->
+
+                <td class="text-center">
+
+                  <button type="button" class="btn btn-outline-danger remove-document">
+
+                    <i class="bi bi-trash"></i>
+
+                  </button>
+
+                </td>
+
+              </tr>
+
+              {% endfor %}
+
+              {% else %}
+
               <tr id="empty-document-row">
+
                 <td colspan="4" class="text-center py-5 text-muted">
+
                   <i class="bi bi-file-earmark-pdf fs-1 d-block mb-3"></i>
 
                   <h5>No Documents Added</h5>
 
                   <p>Upload PDFs for this product.</p>
+
                 </td>
+
               </tr>
+
+              {% endif %}
+
             </tbody>
             <template id="library-document-template">
               <tr>
+
+                <input type="hidden" name="delete_document[]" class="delete-document-flag" value="0">
                 <td>
-                  <select
-                    class="form-select document-library-select"
-                    name="document_library_id[]"
-                  >
+                  <select class="form-select document-library-select" name="document_library_id[]">
                     <option value="">Select Document Type</option>
 
                     {% for document in documents %}
@@ -371,28 +520,15 @@
                 </td>
 
                 <td>
-                  <input
-                    type="text"
-                    class="form-control"
-                    name="document_display_name[]"
-                    placeholder="Display Name"
-                  />
+                  <input type="text" class="form-control" name="document_display_name[]" placeholder="Display Name" />
                 </td>
 
                 <td>
-                  <input
-                    type="file"
-                    class="form-control"
-                    name="document_file[]"
-                    accept=".pdf"
-                  />
+                  <input type="file" class="form-control" name="document_file[]" accept=".pdf" />
                 </td>
 
                 <td class="text-center">
-                  <button
-                    type="button"
-                    class="btn btn-outline-danger remove-document"
-                  >
+                  <button type="button" class="btn btn-outline-danger remove-document">
                     <i class="bi bi-trash"></i>
                   </button>
                 </td>
@@ -400,38 +536,24 @@
             </template>
             <template id="custom-document-template">
               <tr>
+
+                <input type="hidden" name="delete_document[]" class="delete-document-flag" value="0">
                 <td>
-                  <input
-                    type="text"
-                    class="form-control"
-                    name="custom_document_type[]"
-                    placeholder="Example: Test Report"
-                  />
+                  <input type="text" class="form-control" name="custom_document_type[]"
+                    placeholder="Example: Test Report" />
                 </td>
 
                 <td>
-                  <input
-                    type="text"
-                    class="form-control"
-                    name="custom_document_display_name[]"
-                    placeholder="Display Name"
-                  />
+                  <input type="text" class="form-control" name="custom_document_display_name[]"
+                    placeholder="Display Name" />
                 </td>
 
                 <td>
-                  <input
-                    type="file"
-                    class="form-control"
-                    name="custom_document_file[]"
-                    accept=".pdf"
-                  />
+                  <input type="file" class="form-control" name="custom_document_file[]" accept=".pdf" />
                 </td>
 
                 <td class="text-center">
-                  <button
-                    type="button"
-                    class="btn btn-outline-danger remove-document"
-                  >
+                  <button type="button" class="btn btn-outline-danger remove-document">
                     <i class="bi bi-trash"></i>
                   </button>
                 </td>
@@ -448,18 +570,239 @@
 
     <div class="card shadow-sm border-0">
       <div class="card-body">
-        <h4 class="mb-4">SEO</h4>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <div>
+            <h4 class="mb-1">SEO</h4>
+            <small class="text-muted">
+              Optimize how this product appears in Google search results.
+            </small>
+          </div>
 
-        <div class="row">
-          <div class="col-12 mb-3">Meta Title</div>
+          <button type="button" class="btn btn-outline-primary" id="generate-seo">
+            <i class="bi bi-stars"></i>
+            Auto Generate SEO
+          </button>
+        </div>
 
-          <div class="col-12 mb-3">Meta Description</div>
+        <div class="mb-4">
+          {{ form.meta_title.label(class="form-label fw-semibold") }} {{
+          form.meta_title( class="form-control", id="meta_title",
+          placeholder="Example: Medical Isolation Transformer | BEST CONTROL" )
+          }}
 
-          <div class="col-12">Keywords</div>
+          <div class="form-text d-flex justify-content-between">
+            <span>Recommended length: 50–60 characters.</span>
+            <span id="title-counter">0 / 60</span>
+          </div>
+        </div>
+
+        <div class="mb-4">
+          {{ form.meta_description.label(class="form-label fw-semibold") }} {{
+          form.meta_description( class="form-control", rows="4",
+          id="meta_description", placeholder="Short description for Google
+          search results..." ) }}
+
+          <div class="form-text d-flex justify-content-between">
+            <span>Recommended length: 150–160 characters.</span>
+            <span id="description-counter">0 / 160</span>
+          </div>
+        </div>
+
+        <div class="mb-4">
+          {{ form.keywords.label(class="form-label fw-semibold") }} {{
+          form.keywords( class="form-control", rows="3", id="keywords",
+          placeholder="Transformer, Isolation Transformer, Medical Transformer"
+          ) }}
+
+          <div class="form-text">Separate keywords with commas.</div>
+        </div>
+
+        <hr class="my-4" />
+
+        <h6 class="fw-bold mb-3">Google Search Preview</h6>
+
+        <div class="border rounded p-3 bg-light" id="seo-preview">
+          <div id="seo-preview-title" class="text-primary fw-semibold" style="font-size: 20px">
+            <div id="seo-preview-title" style="
+        color:#1a0dab;
+        font-size:22px;
+        font-weight:500;
+    "> Product Title
+            </div>
+
+            <div id="seo-preview-url" style="
+        color:#006621;
+        font-size:14px;
+        margin-top:2px;
+    ">
+              {% if edit_mode %} {{ request.host_url }}products/{{ product.slug }}
+              {% else %} {{ request.host_url }}products/{{ form.slug.data }} {%
+              endif %}
+            </div>
+
+            <div id="seo-preview-description" style="
+        color:#545454;
+        font-size:15px;
+        margin-top:6px;
+        line-height:1.5;
+    ">
+              Your product description will appear here.
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 </form>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+
+    const productName = document.getElementById("product_name");
+    const modelNumber = document.getElementById("model_number");
+    const shortDescription = document.getElementById("short_description");
+    const slug = document.getElementById("slug");
+
+    const metaTitle = document.getElementById("meta_title");
+    const metaDescription = document.getElementById("meta_description");
+    const keywords = document.getElementById("keywords");
+
+    const generateButton = document.getElementById("generate-seo");
+
+    const previewTitle = document.getElementById("seo-preview-title");
+    const previewURL = document.getElementById("seo-preview-url");
+    const previewDescription = document.getElementById("seo-preview-description");
+
+    const titleCounter = document.getElementById("title-counter");
+    const descriptionCounter = document.getElementById("description-counter");
+
+
+    // ---------------------------------------
+    // Update Google Preview
+    // ---------------------------------------
+
+    function updatePreview() {
+
+      previewTitle.textContent =
+        metaTitle.value || "Product Title";
+
+      previewDescription.textContent =
+        metaDescription.value || "Your product description will appear here.";
+
+      previewURL.textContent =
+        window.location.origin +
+        "/products/" +
+        slug.value;
+    }
+
+
+    // ---------------------------------------
+    // Update Character Counters
+    // ---------------------------------------
+
+    function updateCounters() {
+
+      const titleLength = metaTitle.value.length;
+      const descriptionLength = metaDescription.value.length;
+
+      titleCounter.textContent =
+        titleLength + " / 60";
+
+      descriptionCounter.textContent =
+        descriptionLength + " / 160";
+
+
+      titleCounter.className = "";
+
+      if (titleLength <= 40) {
+
+        titleCounter.classList.add("text-warning");
+
+      } else if (titleLength <= 60) {
+
+        titleCounter.classList.add("text-success");
+
+      } else {
+
+        titleCounter.classList.add("text-danger");
+
+      }
+
+
+      descriptionCounter.className = "";
+
+      if (descriptionLength <= 120) {
+
+        descriptionCounter.classList.add("text-warning");
+
+      } else if (descriptionLength <= 160) {
+
+        descriptionCounter.classList.add("text-success");
+
+      } else {
+
+        descriptionCounter.classList.add("text-danger");
+
+      }
+
+    }
+
+
+    // ---------------------------------------
+    // Auto Generate SEO
+    // ---------------------------------------
+
+    generateButton.addEventListener("click", function () {
+
+      metaTitle.value =
+        `${productName.value} | BEST CONTROL`;
+
+      metaDescription.value =
+        `Buy ${productName.value} from BEST CONTROL. ${shortDescription.value}`;
+
+      keywords.value =
+        [
+          productName.value,
+          "Transformer",
+          modelNumber.value,
+          "BEST CONTROL"
+        ]
+          .filter(Boolean)
+          .join(", ");
+
+      updatePreview();
+      updateCounters();
+
+    });
+
+
+    // ---------------------------------------
+    // Live Updates
+    // ---------------------------------------
+
+    [
+      metaTitle,
+      metaDescription,
+      slug
+    ].forEach(function (field) {
+
+      field.addEventListener("input", function () {
+
+        updatePreview();
+        updateCounters();
+
+      });
+
+    });
+
+
+    // ---------------------------------------
+    // Initialize
+    // ---------------------------------------
+
+    updatePreview();
+    updateCounters();
+
+  });
+</script>
 
 {% endblock %}

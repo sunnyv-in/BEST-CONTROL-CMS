@@ -142,6 +142,11 @@ class Product(TimestampMixin, BaseModel):
         nullable=True
     )
 
+    keywords = db.Column(
+    db.Text,
+    nullable=True,
+    )
+
     category = db.relationship(
         "Category",
         back_populates="products"

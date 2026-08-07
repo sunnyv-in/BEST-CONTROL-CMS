@@ -126,7 +126,21 @@ Click one of the buttons above to begin.
 
     if (!removeButton) return;
 
-    removeButton.closest("tr").remove();
+    const row = removeButton.closest("tr");
+
+const deleteFlag = row.querySelector(".delete-document-flag");
+
+if (deleteFlag) {
+
+    deleteFlag.value = "1";
+
+    row.style.display = "none";
+
+} else {
+
+    row.remove();
+
+}
 
     restoreEmptyRow();
   });
@@ -185,40 +199,132 @@ if (addCustomDocumentBtn && documentsBody && customDocumentTemplate) {
   });
 }
 
-// -------------------------
-// Remove Document
-// -------------------------
-
 document.addEventListener("click", function (event) {
-  const removeButton = event.target.closest(".remove-document");
 
-  if (!removeButton) {
-    return;
-  }
+    const removeButton = event.target.closest(".remove-document");
 
-  removeButton.closest("tr").remove();
+    if (!removeButton) return;
 
-  if (documentsBody.children.length === 0) {
-    documentsBody.innerHTML = `
+    const row = removeButton.closest("tr");
 
-<tr id="empty-document-row">
+    const deleteFlag = row.querySelector(".delete-document-flag");
 
-<td colspan="4" class="text-center py-5 text-muted">
+    // Existing document
+    if (deleteFlag) {
 
-<i class="bi bi-file-earmark-pdf fs-1 d-block mb-3"></i>
+        deleteFlag.value = "1";
 
-<h5>No Documents Added</h5>
+        row.style.display = "none";
 
-<p>
+    }
 
-Upload PDFs for this product.
+    // Newly added document
+    else {
 
-</p>
+        row.remove();
 
-</td>
+    }
 
-</tr>
+    if (
+        [...documentsBody.querySelectorAll("tr")]
+            .filter(r => r.style.display !== "none")
+            .length === 0
+    ) {
 
-`;
-  }
+        documentsBody.innerHTML = `
+        <tr id="empty-document-row">
+            <td colspan="4" class="text-center py-5 text-muted">
+                <i class="bi bi-file-earmark-pdf fs-1 d-block mb-3"></i>
+                <h5>No Documents Added</h5>
+                <p>Upload PDFs for this product.</p>
+            </td>
+        </tr>
+        `;
+
+    }
+
 });
+// ==========================================
+// SEO Preview
+// ==========================================
+
+const productNameInput = document.getElementById("product_name");
+const slugInput = document.getElementById("slug");
+
+const metaTitleInput = document.getElementById("meta_title");
+const metaDescriptionInput = document.getElementById("meta_description");
+const keywordsInput = document.getElementById("keywords");
+
+const previewTitle = document.getElementById("seo-preview-title");
+const previewURL = document.getElementById("seo-preview-url");
+const previewDescription = document.getElementById("seo-preview-description");
+
+function updateSEOPreview() {
+  if (!previewTitle) return;
+
+  const productName = productNameInput?.value || "Product Title";
+
+  const slug = slugInput?.value || "product-slug";
+
+  const metaTitle = metaTitleInput?.value || productName + " | BEST CONTROL";
+
+  const metaDescription =
+    metaDescriptionInput?.value || "Your product description will appear here.";
+
+  previewTitle.textContent = metaTitle;
+
+  previewURL.textContent = "https://bestcontrol.in/products/" + slug;
+
+  previewDescription.textContent = metaDescription;
+}
+
+[productNameInput, slugInput, metaTitleInput, metaDescriptionInput].forEach(
+  (input) => {
+    if (!input) return;
+
+    input.addEventListener("input", updateSEOPreview);
+  },
+);
+
+updateSEOPreview();
+
+// ==========================================
+// Auto Generate SEO
+// ==========================================
+
+const generateSEOButton = document.getElementById("generate-seo");
+
+if (generateSEOButton) {
+  generateSEOButton.addEventListener("click", function () {
+    const productName = productNameInput?.value.trim() || "";
+
+    const shortDescription =
+      document
+        .querySelector('textarea[name="short_description"]')
+        ?.value.trim() || "";
+
+    const modelNumber =
+      document.querySelector('input[name="model_number"]')?.value.trim() || "";
+
+    if (!metaTitleInput.value.trim()) {
+      metaTitleInput.value = productName + " | BEST CONTROL";
+    }
+
+    if (!metaDescriptionInput.value.trim()) {
+      metaDescriptionInput.value = `Buy ${productName} from BEST CONTROL. ${shortDescription}`;
+    }
+
+    if (!keywordsInput.value.trim()) {
+      keywordsInput.value = [
+        productName,
+        "Transformer",
+        modelNumber,
+        "BEST CONTROL",
+      ]
+        .filter(Boolean)
+        .join(", ");
+    }
+
+    updateSEOPreview();
+  });
+}

@@ -67,6 +67,21 @@ class ProductForm(FlaskForm):
         default=True
     )
 
+    meta_title = StringField(
+    "Meta Title",
+    validators=[
+        Length(max=255)
+    ]
+    )
+
+    meta_description = TextAreaField(
+        "Meta Description"
+    )
+
+    keywords = TextAreaField(
+        "Keywords"
+    )
+
     submit = SubmitField(
         "Save Product"
     )

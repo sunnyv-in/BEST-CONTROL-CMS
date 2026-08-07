@@ -20,7 +20,7 @@ from app.models import (
 )
 
 from app.services.product_service import (
-    create_product as create_product_service,
+    create_product as create_product_service,  update_product,
 )
 
 from app.services.specification_service import (
@@ -117,6 +117,91 @@ def create_product():
 
     flash(
         "Product created successfully.",
+        "success",
+    )
+
+    return redirect(
+        url_for("admin.product_list")
+    )
+
+# ==========================================
+# Edit Product
+# ==========================================
+
+@admin_bp.route("/products/<int:id>/edit", methods=["GET"])
+@login_required
+def edit_product(id):
+
+    product = Product.query.get_or_404(id)
+
+    form = ProductForm(obj=product)
+
+    form.category_id.choices = [
+        (category.id, category.name)
+        for category in Category.query.order_by(Category.name)
+    ]
+
+    specifications = get_active_specifications()
+
+    documents = DocumentLibrary.query.order_by(
+        DocumentLibrary.display_order
+    ).all()
+
+    return render_template(
+        "admin/products/editor.html",
+        form=form,
+        product=product,
+        specifications=specifications,
+        documents=documents,
+        edit_mode=True,
+    )
+
+@admin_bp.route(
+    "/products/<int:id>/update",
+    methods=["POST"],
+)
+@login_required
+def update_product_route(id):
+
+    product = Product.query.get_or_404(id)
+
+    form = ProductForm()
+
+    form.category_id.choices = [
+        (c.id, c.name)
+        for c in Category.query.order_by(Category.name)
+    ]
+
+    if not form.validate_on_submit():
+
+        flash(
+            "Please correct the errors.",
+            "danger",
+        )
+
+        specifications = get_active_specifications()
+
+        documents = DocumentLibrary.query.order_by(
+            DocumentLibrary.display_order
+        ).all()
+
+        return render_template(
+            "admin/products/editor.html",
+            form=form,
+            product=product,
+            specifications=specifications,
+            documents=documents,
+            edit_mode=True,
+        )
+
+    update_product(
+        product,
+        form,
+        request,
+    )
+
+    flash(
+        "Product updated successfully.",
         "success",
     )
 
