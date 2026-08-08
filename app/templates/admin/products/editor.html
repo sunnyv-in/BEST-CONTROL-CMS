@@ -4,7 +4,8 @@
                 {{ url_for('admin.update_product_route', id=product.id) }}
             {% else %}
                 {{ url_for('admin.create_product') }}
-            {% endif %}">enctype="multipart/form-data">
+            {% endif %}"
+            enctype="multipart/form-data">
   {{ form.hidden_tag() }}
 
   <div class="container-fluid py-4">
@@ -26,52 +27,350 @@
       </div>
     </div>
 
-    <!-- ========================= -->
-    <!-- Images -->
-    <!-- ========================= -->
+    <!-- ========================================================= -->
+<!-- Product Images -->
+<!-- ========================================================= -->
 
-    <div class="card shadow-sm border-0 mb-4">
-      <div class="card-body">
-        <h4 class="mb-4">Product Images</h4>
+<div class="card shadow-sm border-0 mb-4">
 
-        <div class="row">
-          <div class="col-lg-5">
-            {{ form.primary_image( class="d-none", id="primary_image" ) }}
+  <div class="card-body">
 
-            <label for="primary_image" class="upload-box">
-              <i class="bi bi-cloud-arrow-up fs-1"></i>
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
 
-              <h5 class="mt-3">Upload Product Image</h5>
+      <div>
 
-              <p class="text-muted">Drag & Drop or Click</p>
-            </label>
-          </div>
+        <h4 class="mb-1">
+          Product Images
+        </h4>
 
-          <div class="col-lg-7">
-            <div class="preview-box d-flex align-items-center justify-content-center">
-              {% if edit_mode and product.primary_image %}
+        <small class="text-muted">
+          Upload and manage all images for this product.
+          Set one image as the primary image.
+        </small>
 
-              <img id="preview-image" class="img-fluid"
-                src="{{ url_for('static', filename='uploads/products/' ~ product.primary_image) }}"
-                style="max-height: 250px" />
-
-              <span id="preview-placeholder" class="d-none">
-                Image Preview
-              </span>
-
-              {% else %}
-
-              <img id="preview-image" class="img-fluid d-none" style="max-height: 250px" />
-
-              <span id="preview-placeholder"> Image Preview </span>
-
-              {% endif %}
-            </div>
-          </div>
-        </div>
       </div>
+
+      <button
+        type="button"
+        class="btn btn-primary"
+        id="add-product-image"
+      >
+        <i class="bi bi-plus-lg"></i>
+
+        Add Image
+      </button>
+
     </div>
 
+
+    <!-- ===================================================== -->
+    <!-- Gallery Images -->
+    <!-- ===================================================== -->
+
+    <div
+      id="product-images-container"
+      class="row g-4"
+    >
+
+      {% if edit_mode and product.gallery %}
+
+        {% for image in product.gallery %}
+
+        <div
+          class="col-md-6 col-lg-4 product-image-item"
+        >
+
+          <div class="card h-100 border shadow-sm">
+
+            <!-- ------------------------------------------------ -->
+            <!-- Hidden Database Values -->
+            <!-- ------------------------------------------------ -->
+
+            <input
+              type="hidden"
+              name="product_image_id[]"
+              value="{{ image.id }}"
+            >
+
+            <input
+              type="hidden"
+              name="delete_product_image[]"
+              class="delete-product-image-flag"
+              value="0"
+            >
+
+            <input
+              type="hidden"
+              name="product_image_primary[]"
+              class="product-image-primary-flag"
+              value="{% if image.is_primary %}1{% else %}0{% endif %}"
+            >
+
+
+            <!-- ------------------------------------------------ -->
+            <!-- Image Preview -->
+            <!-- ------------------------------------------------ -->
+
+            <div
+              class="position-relative p-2"
+              style="height: 220px;"
+            >
+
+              <img
+                src="{{ url_for(
+                  'static',
+                  filename='uploads/products/' ~ image.image
+                ) }}"
+                class="img-fluid w-100 h-100 product-image-preview"
+                style="object-fit: contain;"
+                alt="{{ image.alt_text or product.name }}"
+              >
+
+
+              <!-- Primary Badge -->
+
+              <span
+                class="badge bg-warning text-dark position-absolute top-0 start-0 m-2 primary-image-badge {% if not image.is_primary %}d-none{% endif %}"
+              >
+                <i class="bi bi-star-fill"></i>
+
+                Primary
+              </span>
+
+            </div>
+
+
+            <!-- ------------------------------------------------ -->
+            <!-- Card Body -->
+            <!-- ------------------------------------------------ -->
+
+            <div class="card-body">
+
+              <label class="form-label fw-semibold">
+                Alt Text
+              </label>
+
+              <input
+                type="text"
+                class="form-control"
+                name="product_image_alt_text[]"
+                value="{{ image.alt_text or '' }}"
+                placeholder="Example: 400VA Transformer Front View"
+              >
+
+
+              <!-- ------------------------------------------------ -->
+              <!-- Actions -->
+              <!-- ------------------------------------------------ -->
+
+              <div class="d-flex gap-2 mt-3">
+
+                <button
+                  type="button"
+                  class="btn btn-outline-warning set-primary-image"
+                >
+                  <i class="bi bi-star"></i>
+
+                  Set Primary
+                </button>
+
+
+                <button
+                  type="button"
+                  class="btn btn-outline-danger remove-product-image"
+                >
+                  <i class="bi bi-trash"></i>
+
+                  Delete
+                </button>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        {% endfor %}
+
+      {% endif %}
+
+
+      <!-- ===================================================== -->
+      <!-- Empty State -->
+      <!-- ===================================================== -->
+
+      <div
+        id="empty-product-images"
+        class="col-12 text-center py-5 text-muted {% if edit_mode and product.gallery %}d-none{% endif %}"
+      >
+
+        <i class="bi bi-images fs-1 d-block mb-3"></i>
+
+        <h5>
+          No Gallery Images
+        </h5>
+
+        <p>
+          Click Add Image to upload gallery photos.
+        </p>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- ========================================================= -->
+<!-- New Product Image Template -->
+<!-- ========================================================= -->
+
+<template id="product-image-template">
+
+  <div class="col-md-6 col-lg-4 product-image-item">
+
+    <!-- New image has no database ID -->
+
+    <input
+      type="hidden"
+      name="product_image_id[]"
+      value=""
+    >
+
+    <input
+      type="hidden"
+      name="delete_product_image[]"
+      class="delete-product-image-flag"
+      value="0"
+    >
+
+    <input
+      type="hidden"
+      name="product_image_primary[]"
+      class="product-image-primary-flag"
+      value="0"
+    >
+
+
+    <div class="card h-100 border shadow-sm">
+
+
+      <!-- =================================================== -->
+      <!-- Preview -->
+      <!-- =================================================== -->
+
+      <div
+        class="position-relative p-2"
+        style="height: 220px;"
+      >
+
+        <img
+          class="img-fluid w-100 h-100 product-image-preview d-none"
+          style="object-fit: contain;"
+          alt="Product Image"
+        >
+
+        <div
+          class="new-image-placeholder h-100 d-flex align-items-center justify-content-center text-muted"
+        >
+
+          <div class="text-center">
+
+            <i class="bi bi-image fs-1 d-block"></i>
+
+            <span>
+              Image Preview
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <!-- Primary Badge -->
+
+        <span
+          class="badge bg-warning text-dark position-absolute top-0 start-0 m-2 primary-image-badge d-none"
+        >
+
+          <i class="bi bi-star-fill"></i>
+
+          Primary
+
+        </span>
+
+      </div>
+
+
+      <!-- =================================================== -->
+      <!-- Card Body -->
+      <!-- =================================================== -->
+
+      <div class="card-body">
+
+        <label class="form-label fw-semibold">
+          Image
+        </label>
+
+        <input
+          type="file"
+          class="form-control product-image-input"
+          name="new_product_image[]"
+          accept="image/*"
+        >
+
+
+        <label class="form-label fw-semibold mt-3">
+          Alt Text
+        </label>
+
+        <input
+          type="text"
+          class="form-control"
+          name="new_product_image_alt_text[]"
+          placeholder="Example: Transformer Front View"
+        >
+
+
+        <div class="d-flex gap-2 mt-3">
+
+          <button
+            type="button"
+            class="btn btn-outline-warning set-primary-image"
+          >
+
+            <i class="bi bi-star"></i>
+
+            Set Primary
+
+          </button>
+
+
+          <button
+            type="button"
+            class="btn btn-outline-danger remove-product-image"
+          >
+
+            <i class="bi bi-trash"></i>
+
+            Remove
+
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</template>
     <!-- ========================= -->
     <!-- General Information -->
     <!-- ========================= -->

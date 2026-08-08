@@ -1,66 +1,261 @@
-{% extends "admin/layout.html" %} {% block title %}Products{% endblock %} {%
-block content %}
+{% extends "admin/layout.html" %}
 
-<div class="page-header d-flex justify-content-between align-items-center mb-4">
-  <div>
-    <h1>Products</h1>
+{% block title %}Products{% endblock %}
 
-    <p class="text-muted">Manage all products.</p>
+{% block content %}
+
+<div class="container-fluid py-4">
+
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+      <h1 class="mb-1">Products</h1>
+      <p class="text-muted mb-0">
+        Manage all products.
+      </p>
+    </div>
+
+    <div>
+      <a
+        href="{{ url_for('admin.new_product') }}"
+        class="btn btn-primary"
+      >
+        <i class="bi bi-plus-lg"></i>
+        Add Product
+      </a>
+    </div>
+
   </div>
 
-  <a href="{{ url_for('admin.new_product') }}" class="btn btn-primary">
-    + Add Product
-  </a>
-</div>
 
-<div class="row g-4">
-  {% for product in products %}
+  <!-- ===================================================== -->
+  <!-- Product Grid -->
+  <!-- ===================================================== -->
 
-  <div class="col-12">
-    <div class="card shadow-sm border-0">
-      <div class="card-body">
-        <div class="row align-items-center">
-          <div class="col-md-2">
-            {% if product.primary_image %}
+  <div class="row g-4">
 
-            <img
-              src="{{ url_for('static', filename='uploads/products/' ~ product.primary_image) }}"
-              class="img-fluid rounded"
-            />
+    {% for product in products %}
+
+    <div class="col-xl-3 col-lg-4 col-md-6">
+
+      <div class="card h-100 border shadow-sm product-card">
+
+        <!-- ================================================= -->
+        <!-- Product Image -->
+        <!-- ================================================= -->
+
+        <div
+          class="product-image-container position-relative"
+          style="
+            height: 240px;
+            background: #f8f9fa;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          "
+        >
+
+          {# ------------------------------------------------- #}
+          {# Find primary gallery image                       #}
+          {# ------------------------------------------------- #}
+
+          {% set primary_image = none %}
+
+          {% if product.gallery %}
+
+            {% for image in product.gallery %}
+
+              {% if image.is_primary %}
+
+                {% set primary_image = image %}
+
+              {% endif %}
+
+            {% endfor %}
+
+            {# If no primary image exists, use first image #}
+
+            {% if not primary_image %}
+
+              {% set primary_image = product.gallery[0] %}
 
             {% endif %}
-          </div>
 
-          <div class="col-md-7">
-            <h4>{{ product.name }}</h4>
+          {% endif %}
 
-            <p class="text-muted mb-1">{{ product.model_number }}</p>
 
-            <p>{{ product.category.name }}</p>
-          </div>
+          {# ------------------------------------------------- #}
+          {# Display image                                     #}
+          {# ------------------------------------------------- #}
 
-          <div class="col-md-3 text-end">
+          {% if primary_image %}
+
+            <img
+              src="{{ url_for(
+                'static',
+                filename='uploads/products/' ~ primary_image.image
+              ) }}"
+              alt="{{ primary_image.alt_text or product.name }}"
+              class="product-list-image"
+              loading="lazy"
+            >
+
+          {% else %}
+
+            <div class="text-center text-muted">
+
+              <i class="bi bi-image fs-1 d-block mb-2"></i>
+
+              <span>
+                No image
+              </span>
+
+            </div>
+
+          {% endif %}
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- Product Information -->
+        <!-- ================================================= -->
+
+        <div class="card-body">
+
+          <h4 class="card-title mb-2">
+            {{ product.name }}
+          </h4>
+
+          <p class="text-muted mb-2">
+            {{ product.model_number }}
+          </p>
+
+          {% if product.category %}
+
+            <p class="mb-0">
+              {{ product.category.name }}
+            </p>
+
+          {% endif %}
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- Actions -->
+        <!-- ================================================= -->
+
+        <div class="card-footer bg-white border-0 pt-0 pb-3">
+
+          <div class="d-flex justify-content-between align-items-center">
+
             <a
               href="{{ url_for('admin.edit_product', id=product.id) }}"
               class="btn btn-outline-primary"
             >
+              <i class="bi bi-pencil"></i>
               Edit
             </a>
+
 
             <form
               method="POST"
               action="{{ url_for('admin.delete_product', id=product.id) }}"
               class="d-inline"
+              onsubmit="return confirm('Are you sure you want to delete this product?');"
             >
-              <button class="btn btn-danger">Delete</button>
+
+              <button
+                type="submit"
+                class="btn btn-danger"
+              >
+                <i class="bi bi-trash"></i>
+                Delete
+              </button>
+
             </form>
+
           </div>
+
         </div>
+
       </div>
+
     </div>
+
+    {% else %}
+
+    <!-- ================================================= -->
+    <!-- No Products -->
+    <!-- ================================================= -->
+
+    <div class="col-12">
+
+      <div class="card border shadow-sm">
+
+        <div class="card-body text-center py-5">
+
+          <i class="bi bi-box-seam fs-1 text-muted d-block mb-3"></i>
+
+          <h4>
+            No Products Found
+          </h4>
+
+          <p class="text-muted">
+            Start by creating your first product.
+          </p>
+
+          <a
+            href="{{ url_for('admin.new_product') }}"
+            class="btn btn-primary"
+          >
+            <i class="bi bi-plus-lg"></i>
+            Add Product
+          </a>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    {% endfor %}
+
   </div>
 
-  {% endfor %}
 </div>
+
+
+<!-- ========================================================= -->
+<!-- Product Image Styling -->
+<!-- ========================================================= -->
+
+<style>
+
+.product-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.10) !important;
+}
+
+.product-list-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  padding: 15px;
+}
+
+.product-image-container {
+  border-bottom: 1px solid #e9ecef;
+}
+
+</style>
 
 {% endblock %}

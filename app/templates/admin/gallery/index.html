@@ -1,0 +1,677 @@
+{% extends "admin/layout.html" %}
+
+{% block title %}
+Gallery | BEST CONTROL CMS
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid gallery-page">
+
+    <!-- =========================================================
+         HEADER
+         ========================================================= -->
+
+    <div class="mb-4">
+        <h1 class="mb-1">Gallery</h1>
+
+        <p class="text-muted mb-0">
+            Manage product images and product galleries.
+        </p>
+    </div>
+
+
+    <!-- =========================================================
+         PRODUCTS GRID
+         ========================================================= -->
+
+    {% if products %}
+
+        <div class="gallery-product-grid">
+
+            {% for product in products %}
+
+                {% set product_images = product.gallery %}
+
+                {% set primary_image = (
+                    product_images
+                    |selectattr("is_primary", "equalto", true)
+                    |first
+                ) %}
+
+                {% if not primary_image and product_images %}
+                    {% set primary_image = product_images[0] %}
+                {% endif %}
+
+
+                {% if primary_image %}
+
+                    <!-- =================================================
+                         PRODUCT CARD
+                         ================================================= -->
+
+                    <div
+                        class="gallery-product-card"
+                        tabindex="0"
+                        role="button"
+                        data-product-id="{{ product.id }}"
+                        aria-label="Open {{ product.name }} gallery"
+                    >
+
+                        <!-- IMAGE -->
+
+                        <div class="gallery-primary-image-wrapper">
+
+                            <img
+                                src="{{ url_for(
+                                    'static',
+                                    filename='uploads/products/' ~ primary_image.image
+                                ) }}"
+                                alt="{{ primary_image.alt_text or product.name }}"
+                                class="gallery-primary-image"
+                                loading="lazy"
+                                draggable="false"
+                            >
+
+                            {% if primary_image.is_primary %}
+
+                                <span class="gallery-primary-badge">
+                                    <i class="bi bi-star-fill"></i>
+                                    Primary
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- PRODUCT INFORMATION -->
+
+                        <div class="gallery-primary-info">
+
+                            <div class="d-flex justify-content-between align-items-start gap-2">
+
+                                <div class="min-w-0">
+
+                                    <h3 class="gallery-product-title">
+                                        {{ product.name }}
+                                    </h3>
+
+                                    {% if product.model_number %}
+                                        <div class="gallery-model-number">
+                                            {{ product.model_number }}
+                                        </div>
+                                    {% endif %}
+
+                                </div>
+
+                                <a
+                                    href="{{ url_for('admin.edit_product', id=product.id) }}"
+                                    class="btn btn-sm btn-outline-primary flex-shrink-0"
+                                    title="Edit {{ product.name }}"
+                                >
+                                    <i class="bi bi-pencil"></i>
+                                    <span class="d-none d-xl-inline">Edit</span>
+                                </a>
+
+                            </div>
+
+
+                            <div class="gallery-image-count">
+
+                                <i class="bi bi-images"></i>
+
+                                {{ product_images|length }}
+
+                                {% if product_images|length == 1 %}
+                                    image
+                                {% else %}
+                                    images
+                                {% endif %}
+
+                                <span class="ms-1">
+                                    · Click to view gallery
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         HIDDEN PRODUCT IMAGE DATA
+                         ================================================= -->
+
+                    <script
+                        type="application/json"
+                        id="gallery-data-{{ product.id }}"
+                    >
+[
+{% for image in product_images %}
+    {
+        "url": {{ url_for(
+            'static',
+            filename='uploads/products/' ~ image.image
+        )|tojson }},
+        "alt": {{ (image.alt_text or product.name)|tojson }},
+        "primary": {{ image.is_primary|tojson }}
+    }{% if not loop.last %},{% endif %}
+{% endfor %}
+]
+                    </script>
+
+                {% endif %}
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <!-- =========================================================
+             EMPTY STATE
+             ========================================================= -->
+
+        <div class="card shadow-sm border-0">
+
+            <div class="card-body text-center py-5">
+
+                <i class="bi bi-images display-1 text-muted"></i>
+
+                <h4 class="mt-3">
+                    No Products Found
+                </h4>
+
+                <p class="text-muted mb-0">
+                    Add products and product images to see them here.
+                </p>
+
+            </div>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+
+<!-- =============================================================
+     PHOTOSWIPE CSS
+     ============================================================= -->
+
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/photoswipe@5/dist/photoswipe.css"
+/>
+
+
+<!-- =============================================================
+     GALLERY CSS
+     ============================================================= -->
+
+<style>
+
+    /* =========================================================
+       PRODUCT GRID
+       ========================================================= */
+
+    .gallery-product-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 20px;
+        width: 100%;
+    }
+
+
+    /* =========================================================
+       PRODUCT CARD
+       ========================================================= */
+
+    .gallery-product-card {
+        position: relative;
+        border: 1px solid #dee2e6;
+        border-radius: 12px;
+        overflow: hidden;
+        background: #ffffff;
+        cursor: pointer;
+        outline: none;
+
+        transition:
+            transform 0.15s ease,
+            box-shadow 0.15s ease,
+            border-color 0.15s ease;
+    }
+
+    .gallery-product-card:hover {
+        transform: translateY(-3px);
+        border-color: #0d6efd;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.10);
+    }
+
+    .gallery-product-card:focus-visible {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.20);
+    }
+
+
+    /* =========================================================
+       PRIMARY IMAGE
+       ========================================================= */
+
+    .gallery-primary-image-wrapper {
+        position: relative;
+        width: 100%;
+        height: 210px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        background: #f8f9fa;
+        overflow: hidden;
+    }
+
+    .gallery-primary-image {
+        width: 100%;
+        height: 100%;
+
+        object-fit: contain;
+        padding: 12px;
+
+        user-select: none;
+        -webkit-user-drag: none;
+        pointer-events: none;
+    }
+
+
+    /* =========================================================
+       PRIMARY BADGE
+       ========================================================= */
+
+    .gallery-primary-badge {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        z-index: 2;
+
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+
+        padding: 5px 9px;
+
+        border-radius: 6px;
+
+        background: #ffc107;
+        color: #212529;
+
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+
+    /* =========================================================
+       PRODUCT INFO
+       ========================================================= */
+
+    .gallery-primary-info {
+        padding: 14px 16px;
+        border-top: 1px solid #dee2e6;
+    }
+
+    .gallery-product-title {
+        margin: 0;
+
+        font-size: 17px;
+        line-height: 1.3;
+        font-weight: 600;
+
+        color: #212529;
+
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .gallery-model-number {
+        margin-top: 4px;
+
+        font-size: 13px;
+        color: #6c757d;
+    }
+
+    .gallery-image-count {
+        margin-top: 10px;
+
+        font-size: 13px;
+        color: #6c757d;
+    }
+
+
+    /* =========================================================
+       RESPONSIVE
+       ========================================================= */
+
+    @media (max-width: 1200px) {
+        .gallery-product-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+    }
+
+    @media (max-width: 900px) {
+        .gallery-product-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @media (max-width: 576px) {
+        .gallery-product-grid {
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+
+        .gallery-primary-image-wrapper {
+            height: 220px;
+        }
+    }
+
+</style>
+
+
+<!-- =============================================================
+     PHOTOSWIPE + GALLERY JAVASCRIPT
+     ============================================================= -->
+
+<script type="module">
+
+    import PhotoSwipeLightbox from
+        "https://cdn.jsdelivr.net/npm/photoswipe@5/dist/photoswipe-lightbox.esm.min.js";
+
+    import PhotoSwipe from
+        "https://cdn.jsdelivr.net/npm/photoswipe@5/dist/photoswipe.esm.min.js";
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        console.log(
+            "BEST CONTROL PhotoSwipe gallery starting..."
+        );
+
+
+        /* ============================================================
+           PHOTOSWIPE
+           ============================================================ */
+
+        const lightbox = new PhotoSwipeLightbox({
+
+            pswpModule: PhotoSwipe,
+
+            preload: [1, 2],
+
+            initialZoomLevel: function (zoom) {
+                return zoom.fit * 0.72;
+            },
+
+            secondaryZoomLevel: function (zoom) {
+                return zoom.fit * 1.5;
+            },
+
+            maxZoomLevel: function (zoom) {
+                return zoom.fit * 3;
+            },
+
+            showHideAnimationType: "zoom",
+
+            bgOpacity: 0.92,
+
+            bgClickAction: "close",
+
+            imageClickAction: "zoom",
+
+            doubleTapAction: "zoom",
+
+            closeTitle: "Close gallery",
+
+            arrowPrevTitle: "Previous image",
+
+            arrowNextTitle: "Next image",
+
+            zoomTitle: "Zoom image"
+
+        });
+
+
+        /* ============================================================
+           OPEN PRODUCT GALLERY
+           ============================================================ */
+
+        async function openProductGallery(card) {
+
+            const productId = card.dataset.productId;
+
+            console.log(
+                "Opening product gallery:",
+                productId
+            );
+
+
+            const dataElement =
+                document.getElementById(
+                    "gallery-data-" + productId
+                );
+
+
+            if (!dataElement) {
+
+                console.error(
+                    "Gallery data not found:",
+                    productId
+                );
+
+                return;
+            }
+
+
+            let images;
+
+            try {
+
+                images = JSON.parse(
+                    dataElement.textContent.trim()
+                );
+
+            } catch (error) {
+
+                console.error(
+                    "Unable to parse gallery data:",
+                    error
+                );
+
+                return;
+            }
+
+
+            if (
+                !Array.isArray(images) ||
+                images.length === 0
+            ) {
+
+                console.warn(
+                    "No images found for:",
+                    productId
+                );
+
+                return;
+            }
+
+
+            /* ==========================================================
+               GET REAL IMAGE DIMENSIONS
+               ========================================================== */
+
+            const items = await Promise.all(
+
+                images.map(function (image) {
+
+                    return new Promise(function (resolve) {
+
+                        const img = new Image();
+
+
+                        img.onload = function () {
+
+                            resolve({
+
+                                src: image.url,
+
+                                width:
+                                    img.naturalWidth || 1600,
+
+                                height:
+                                    img.naturalHeight || 1200,
+
+                                alt:
+                                    image.alt ||
+                                    "Product image"
+
+                            });
+
+                        };
+
+
+                        img.onerror = function () {
+
+                            console.warn(
+                                "Could not load image:",
+                                image.url
+                            );
+
+                            resolve({
+
+                                src: image.url,
+
+                                width: 1600,
+
+                                height: 1200,
+
+                                alt:
+                                    image.alt ||
+                                    "Product image"
+
+                            });
+
+                        };
+
+
+                        img.src = image.url;
+
+                    });
+
+                })
+
+            );
+
+
+            /* ==========================================================
+               OPEN THIS PRODUCT'S IMAGES
+               ========================================================== */
+
+            lightbox.loadAndOpen(
+                0,
+                items
+            );
+
+        }
+
+
+        /* ============================================================
+           PRODUCT CARD CLICK
+           ============================================================ */
+
+        document
+            .querySelectorAll(".gallery-product-card")
+            .forEach(function (card) {
+
+                card.addEventListener(
+                    "click",
+                    function (event) {
+
+                        /*
+                         * Clicking Edit should not open PhotoSwipe.
+                         */
+
+                        if (
+                            event.target.closest("a")
+                        ) {
+                            return;
+                        }
+
+                        openProductGallery(card);
+
+                    }
+                );
+
+
+                /* ========================================================
+                   KEYBOARD ACCESSIBILITY
+                   ======================================================== */
+
+                card.addEventListener(
+                    "keydown",
+                    function (event) {
+
+                        if (
+                            event.key === "Enter" ||
+                            event.key === " "
+                        ) {
+
+                            event.preventDefault();
+
+                            openProductGallery(card);
+
+                        }
+
+                    }
+                );
+
+            });
+
+
+        /* ============================================================
+           INITIALIZE PHOTOSWIPE
+           ============================================================ */
+
+        lightbox.init();
+
+
+        console.log(
+            "BEST CONTROL PhotoSwipe gallery initialized."
+        );
+
+
+        /* ============================================================
+           PREVENT IMAGE DRAGGING
+           ============================================================ */
+
+        document
+            .querySelectorAll(".gallery-primary-image")
+            .forEach(function (image) {
+
+                image.addEventListener(
+                    "dragstart",
+                    function (event) {
+
+                        event.preventDefault();
+
+                    }
+                );
+
+            });
+
+    });
+
+</script>
+
+{% endblock %}

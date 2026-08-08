@@ -17,6 +17,9 @@ from app.models import (
     Product,
     Category,
     DocumentLibrary,
+    ProductSpecification,
+    ProductDocument,
+    ProductImage,
 )
 
 from app.services.product_service import (
@@ -231,4 +234,25 @@ def delete_product(id):
 
     return redirect(
         url_for("admin.product_list")
+    )
+
+# =====================================================
+# Product Gallery
+# =====================================================
+
+@admin_bp.route("/gallery")
+@login_required
+def gallery():
+
+    products = (
+        Product.query
+        .join(ProductImage)
+        .distinct()
+        .order_by(Product.name)
+        .all()
+    )
+
+    return render_template(
+        "admin/gallery/index.html",
+        products=products,
     )

@@ -21,17 +21,27 @@ class ProductImage(db.Model):
         nullable=False,
     )
 
+    alt_text = db.Column(
+        db.String(255),
+        nullable=True,
+    )
+
     is_primary = db.Column(
         db.Boolean,
         default=False,
+        nullable=False,
     )
 
     display_order = db.Column(
         db.Integer,
         default=0,
+        nullable=False,
     )
 
     product = db.relationship(
         "Product",
         back_populates="gallery",
     )
+
+    def __repr__(self):
+        return f"<ProductImage {self.image}>"

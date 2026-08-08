@@ -16,6 +16,10 @@ from app.services.product_document_service import (
     save_product_documents,
 )
 
+from app.services.product_image_service import (
+    save_product_images,
+)
+
 
 # =====================================================
 # Create Product
@@ -93,6 +97,12 @@ def create_product(form, request):
         product,
         request,
     )
+
+    save_product_images(
+    product,
+    request,
+)
+
 
     db.session.commit()
 
@@ -178,6 +188,11 @@ def update_product(product, form, request):
         product,
         request,
     )
+
+    save_product_images(
+    product,
+    request,
+)
 
     db.session.commit()
 

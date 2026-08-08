@@ -30,6 +30,7 @@ class Product(TimestampMixin, BaseModel):
     "ProductImage",
     back_populates="product",
     cascade="all, delete-orphan",
+    lazy=True,
     order_by="ProductImage.display_order",
     )
 
