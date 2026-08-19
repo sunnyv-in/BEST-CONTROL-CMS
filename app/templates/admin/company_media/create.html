@@ -1,0 +1,424 @@
+{% extends "admin/layout.html" %}
+
+{% block title %}
+Add Company Media | BEST CONTROL CMS
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid py-4">
+
+  <!-- ===================================================== -->
+  <!-- Header -->
+  <!-- ===================================================== -->
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+
+      <h1 class="mb-1">
+        Add Company Media
+      </h1>
+
+      <p class="text-muted mb-0">
+        Upload an image for the BEST CONTROL company website.
+      </p>
+
+    </div>
+
+    <a
+      href="{{ url_for('admin.company_media_list') }}"
+      class="btn btn-outline-secondary"
+    >
+      <i class="bi bi-arrow-left me-1"></i>
+      Back to Media
+    </a>
+
+  </div>
+
+
+  <!-- ===================================================== -->
+  <!-- Form -->
+  <!-- ===================================================== -->
+
+  <div class="card border shadow-sm">
+
+    <div class="card-body p-4">
+
+      <form
+        method="POST"
+        enctype="multipart/form-data"
+      >
+
+        <!-- ================================================= -->
+        <!-- Image Upload -->
+        <!-- ================================================= -->
+
+        <div class="mb-4">
+
+          <label
+            for="file"
+            class="form-label fw-semibold"
+          >
+            Image
+          </label>
+
+          <input
+            type="file"
+            class="form-control"
+            id="file"
+            name="file"
+            accept="image/jpeg,image/png,image/webp,image/gif"
+            required
+          >
+
+          <div class="form-text">
+            JPG, JPEG, PNG, WEBP or GIF.
+          </div>
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- Image Preview -->
+        <!-- ================================================= -->
+
+        <div
+          id="image-preview-container"
+          class="mb-4 d-none"
+        >
+
+          <label class="form-label fw-semibold">
+            Image Preview
+          </label>
+
+          <div
+            class="border rounded p-3 text-center bg-light"
+          >
+
+            <img
+              id="image-preview"
+              src=""
+              alt="Image Preview"
+              style="
+                max-width: 100%;
+                max-height: 350px;
+                object-fit: contain;
+              "
+            >
+
+          </div>
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- Title -->
+        <!-- ================================================= -->
+
+        <div class="mb-4">
+
+          <label
+            for="title"
+            class="form-label fw-semibold"
+          >
+            Title
+          </label>
+
+          <input
+            type="text"
+            class="form-control"
+            id="title"
+            name="title"
+            maxlength="150"
+            placeholder="Example: BEST CONTROL Manufacturing Facility"
+            required
+          >
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- Alt Text -->
+        <!-- ================================================= -->
+
+        <div class="mb-4">
+
+          <label
+            for="alt_text"
+            class="form-label fw-semibold"
+          >
+            Alt Text
+          </label>
+
+          <input
+            type="text"
+            class="form-control"
+            id="alt_text"
+            name="alt_text"
+            maxlength="255"
+            placeholder="Example: BEST CONTROL transformer manufacturing facility"
+          >
+
+          <div class="form-text">
+            Describe the image for accessibility and SEO.
+          </div>
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- Category -->
+        <!-- ================================================= -->
+
+        <div class="mb-4">
+
+          <label
+            for="category"
+            class="form-label fw-semibold"
+          >
+            Category
+          </label>
+
+          <select
+            class="form-select"
+            id="category"
+            name="category"
+          >
+
+            <option value="">
+              Select category
+            </option>
+
+            <option value="Factory">
+              Factory
+            </option>
+
+            <option value="Manufacturing">
+              Manufacturing
+            </option>
+
+            <option value="Machines">
+              Machines
+            </option>
+
+            <option value="Team">
+              Team
+            </option>
+
+            <option value="Events">
+              Events
+            </option>
+
+            <option value="Certificates">
+              Certificates
+            </option>
+
+            <option value="Other">
+              Other
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- Description -->
+        <!-- ================================================= -->
+
+        <div class="mb-4">
+
+          <label
+            for="description"
+            class="form-label fw-semibold"
+          >
+            Description
+          </label>
+
+          <textarea
+            class="form-control"
+            id="description"
+            name="description"
+            rows="4"
+            placeholder="Describe this company media..."
+          ></textarea>
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- Display Order -->
+        <!-- ================================================= -->
+
+        <div class="mb-4">
+
+          <label
+            for="display_order"
+            class="form-label fw-semibold"
+          >
+            Display Order
+          </label>
+
+          <input
+            type="number"
+            class="form-control"
+            id="display_order"
+            name="display_order"
+            value="0"
+            min="0"
+          >
+
+          <div class="form-text">
+            Lower numbers appear first.
+          </div>
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- Featured -->
+        <!-- ================================================= -->
+
+        <div class="form-check mb-4">
+
+          <input
+            class="form-check-input"
+            type="checkbox"
+            id="featured"
+            name="featured"
+          >
+
+          <label
+            class="form-check-label"
+            for="featured"
+          >
+            <strong>Featured Media</strong>
+          </label>
+
+          <div class="form-text">
+            Featured media can later be highlighted on the public website.
+          </div>
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- Buttons -->
+        <!-- ================================================= -->
+
+        <div class="d-flex gap-2">
+
+          <button
+            type="submit"
+            class="btn btn-primary"
+          >
+            <i class="bi bi-check-lg me-1"></i>
+            Save Media
+          </button>
+
+          <a
+            href="{{ url_for('admin.company_media_list') }}"
+            class="btn btn-outline-secondary"
+          >
+            Cancel
+          </a>
+
+        </div>
+
+      </form>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- ========================================================= -->
+<!-- Image Preview JavaScript -->
+<!-- ========================================================= -->
+
+<script>
+
+document.addEventListener(
+  "DOMContentLoaded",
+  function () {
+
+    const fileInput =
+      document.getElementById("file");
+
+    const previewContainer =
+      document.getElementById(
+        "image-preview-container"
+      );
+
+    const preview =
+      document.getElementById("image-preview");
+
+
+    if (!fileInput) {
+      return;
+    }
+
+
+    fileInput.addEventListener(
+      "change",
+      function () {
+
+        const file =
+          this.files[0];
+
+
+        if (!file) {
+
+          preview.src = "";
+
+          previewContainer.classList.add(
+            "d-none"
+          );
+
+          return;
+        }
+
+
+        if (!file.type.startsWith("image/")) {
+
+          preview.src = "";
+
+          previewContainer.classList.add(
+            "d-none"
+          );
+
+          return;
+        }
+
+
+        const reader =
+          new FileReader();
+
+
+        reader.onload =
+          function (event) {
+
+            preview.src =
+              event.target.result;
+
+            previewContainer.classList.remove(
+              "d-none"
+            );
+
+          };
+
+
+        reader.readAsDataURL(file);
+
+      }
+    );
+
+  }
+);
+
+</script>
+
+{% endblock %}

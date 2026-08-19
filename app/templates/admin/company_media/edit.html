@@ -1,0 +1,321 @@
+{% extends "admin/layout.html" %}
+
+{% block title %}Edit Company Media{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+        <h1 class="mb-1">Edit Company Media</h1>
+
+        <p class="text-muted mb-0">
+            Update company media information.
+        </p>
+    </div>
+
+    <a
+        href="{{ url_for('admin.company_media_list') }}"
+        class="btn btn-outline-secondary"
+    >
+        ← Back to Media
+    </a>
+
+</div>
+
+
+<div class="card shadow-sm">
+
+    <div class="card-body p-4">
+
+        <form
+            method="POST"
+            enctype="multipart/form-data"
+        >
+
+            <!-- Current Image -->
+
+            <div class="mb-4">
+
+                <label class="form-label fw-semibold">
+                    Current Image
+                </label>
+
+                <div
+                    class="border rounded p-3 text-center"
+                    style="max-width: 500px;"
+                >
+
+                    <img
+                        src="{{ url_for(
+                            'static',
+                            filename='uploads/company_media/' ~ media.file
+                        ) }}"
+                        alt="{{ media.alt_text or media.title }}"
+                        class="img-fluid rounded"
+                        style="
+                            max-height: 300px;
+                            object-fit: contain;
+                        "
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- Replace Image -->
+
+            <div class="mb-4">
+
+                <label
+                    for="file"
+                    class="form-label fw-semibold"
+                >
+                    Replace Image
+                </label>
+
+                <input
+                    type="file"
+                    id="file"
+                    name="file"
+                    class="form-control"
+                    accept=".jpg,.jpeg,.png,.webp,.gif"
+                >
+
+                <div class="form-text">
+                    Leave empty to keep the current image.
+                </div>
+
+            </div>
+
+
+            <!-- Title -->
+
+            <div class="mb-4">
+
+                <label
+                    for="title"
+                    class="form-label fw-semibold"
+                >
+                    Title
+                </label>
+
+                <input
+                    type="text"
+                    id="title"
+                    name="title"
+                    class="form-control"
+                    value="{{ media.title }}"
+                    placeholder="Example: BEST CONTROL Manufacturing Facility"
+                    required
+                >
+
+            </div>
+
+
+            <!-- Alt Text -->
+
+            <div class="mb-4">
+
+                <label
+                    for="alt_text"
+                    class="form-label fw-semibold"
+                >
+                    Alt Text
+                </label>
+
+                <input
+                    type="text"
+                    id="alt_text"
+                    name="alt_text"
+                    class="form-control"
+                    value="{{ media.alt_text or '' }}"
+                    placeholder="Example: BEST CONTROL transformer manufacturing facility"
+                >
+
+                <div class="form-text">
+                    Describe the image for accessibility and SEO.
+                </div>
+
+            </div>
+
+
+            <!-- Category -->
+
+            <div class="mb-4">
+
+                <label
+                    for="category"
+                    class="form-label fw-semibold"
+                >
+                    Category
+                </label>
+
+                <select
+                    id="category"
+                    name="category"
+                    class="form-select"
+                >
+
+                    <option value="">
+                        Select category
+                    </option>
+
+                    <option
+                        value="Factory"
+                        {% if media.category == "Factory" %}selected{% endif %}
+                    >
+                        Factory
+                    </option>
+
+                    <option
+                        value="Machines"
+                        {% if media.category == "Machines" %}selected{% endif %}
+                    >
+                        Machines
+                    </option>
+
+                    <option
+                        value="Manufacturing"
+                        {% if media.category == "Manufacturing" %}selected{% endif %}
+                    >
+                        Manufacturing
+                    </option>
+
+                    <option
+                        value="Workplace"
+                        {% if media.category == "Workplace" %}selected{% endif %}
+                    >
+                        Workplace
+                    </option>
+
+                    <option
+                        value="Team"
+                        {% if media.category == "Team" %}selected{% endif %}
+                    >
+                        Team
+                    </option>
+
+                    <option
+                        value="Events"
+                        {% if media.category == "Events" %}selected{% endif %}
+                    >
+                        Events
+                    </option>
+
+                    <option
+                        value="Other"
+                        {% if media.category == "Other" %}selected{% endif %}
+                    >
+                        Other
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Description -->
+
+            <div class="mb-4">
+
+                <label
+                    for="description"
+                    class="form-label fw-semibold"
+                >
+                    Description
+                </label>
+
+                <textarea
+                    id="description"
+                    name="description"
+                    class="form-control"
+                    rows="5"
+                    placeholder="Describe this company media..."
+                >{{ media.description or '' }}</textarea>
+
+            </div>
+
+
+            <!-- Display Order -->
+
+            <div class="mb-4">
+
+                <label
+                    for="display_order"
+                    class="form-label fw-semibold"
+                >
+                    Display Order
+                </label>
+
+                <input
+                    type="number"
+                    id="display_order"
+                    name="display_order"
+                    class="form-control"
+                    value="{{ media.display_order }}"
+                    min="0"
+                >
+
+                <div class="form-text">
+                    Lower numbers appear first.
+                </div>
+
+            </div>
+
+
+            <!-- Featured -->
+
+            <div class="form-check mb-4">
+
+                <input
+                    type="checkbox"
+                    id="featured"
+                    name="featured"
+                    class="form-check-input"
+                    {% if media.featured %}checked{% endif %}
+                >
+
+                <label
+                    for="featured"
+                    class="form-check-label fw-semibold"
+                >
+                    Featured Media
+                </label>
+
+                <div class="form-text ms-4">
+                    Featured media can later be highlighted
+                    on the public website.
+                </div>
+
+            </div>
+
+
+            <!-- Buttons -->
+
+            <div class="d-flex gap-2">
+
+                <button
+                    type="submit"
+                    class="btn btn-primary"
+                >
+                    ✓ Save Changes
+                </button>
+
+                <a
+                    href="{{ url_for('admin.company_media_list') }}"
+                    class="btn btn-outline-secondary"
+                >
+                    Cancel
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

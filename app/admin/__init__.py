@@ -13,3 +13,4 @@ from app.admin import categories
 from app.admin import products
 from app.admin import product_specifications
 from app.admin import specification_library
+from app.admin import company_media

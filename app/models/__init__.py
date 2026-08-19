@@ -6,3 +6,4 @@ from .specification_library import SpecificationLibrary
 from .product_image import ProductImage
 from .document_library import DocumentLibrary
 from .product_document import ProductDocument
+from .company_media import CompanyMedia

@@ -6,36 +6,46 @@
 
 <div class="container-fluid">
 
-   {% set title = "Welcome back, " ~ current_user.full_name ~ " 👋" %}
-{% set subtitle = "Powering Industries Efficiently" %}
-{% set action_url = None %}
-{% set action_text = None %}
+    {% set title = "Welcome back, " ~ current_user.full_name ~ " 👋" %}
+    {% set subtitle = "Powering Industries Efficiently" %}
+    {% set action_url = None %}
+    {% set action_text = None %}
 
-{% include "admin/components/page_header.html" %}
+    {% include "admin/components/page_header.html" %}
+
 
     <div class="row g-4">
 
-    {% set title = "Products" %}
-    {% set value = stats.products %}
-    {% set icon = "bi bi-box-seam" %}
-    {% include "admin/components/stat_card.html" %}
+        {% set title = "Products" %}
+        {% set value = stats.products %}
+        {% set icon = "bi bi-box-seam" %}
+        {% include "admin/components/stat_card.html" %}
 
-    {% set title = "Categories" %}
-    {% set value = stats.categories %}
-    {% set icon = "bi bi-tags" %}
-    {% include "admin/components/stat_card.html" %}
 
-    {% set title = "Gallery" %}
-    {% set value = stats.gallery %}
-    {% set icon = "bi bi-images" %}
-    {% include "admin/components/stat_card.html" %}
+        {% set title = "Categories" %}
+        {% set value = stats.categories %}
+        {% set icon = "bi bi-tags" %}
+        {% include "admin/components/stat_card.html" %}
 
-    {% set title = "Messages" %}
-    {% set value = stats.messages %}
-    {% set icon = "bi bi-envelope" %}
-    {% include "admin/components/stat_card.html" %}
 
-</div>
+        {% set title = "Gallery" %}
+        {% set value = stats.gallery %}
+        {% set icon = "bi bi-images" %}
+        {% include "admin/components/stat_card.html" %}
+
+
+        {% set title = "Company Media" %}
+        {% set value = stats.company_media %}
+        {% set icon = "bi bi-building" %}
+        {% include "admin/components/stat_card.html" %}
+
+
+        {% set title = "Messages" %}
+        {% set value = stats.messages %}
+        {% set icon = "bi bi-envelope" %}
+        {% include "admin/components/stat_card.html" %}
+
+    </div>
 
 </div>
 
