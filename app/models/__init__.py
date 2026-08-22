@@ -7,3 +7,4 @@ from .product_image import ProductImage
 from .document_library import DocumentLibrary
 from .product_document import ProductDocument
 from .company_media import CompanyMedia
+from .industry import Industry

@@ -1,0 +1,399 @@
+{% extends "admin/layout.html" %}
+
+{% block title %}Edit Industry{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+        <h1 class="mb-1">Edit Industry</h1>
+
+        <p class="text-muted mb-0">
+            Update the industry information for BEST CONTROL.
+        </p>
+    </div>
+
+    <a href="{{ url_for('admin.industry_list') }}" class="btn btn-outline-secondary">
+        ← Back to Industries
+    </a>
+
+</div>
+
+
+<div class="card shadow-sm">
+
+    <div class="card-body p-4">
+
+        <form method="POST" action="{{ url_for('admin.edit_industry', id=industry.id) }}" enctype="multipart/form-data">
+
+            {{ form.hidden_tag() }}
+
+
+            <!-- ========================================== -->
+            <!-- Industry Name -->
+            <!-- ========================================== -->
+
+            <div class="mb-4">
+
+                {{ form.name.label(
+                class="form-label fw-semibold"
+                ) }}
+
+                {{ form.name(
+                class="form-control",
+                placeholder="Example: Industrial Automation"
+                ) }}
+
+                {% for error in form.name.errors %}
+
+                <div class="text-danger small mt-1">
+                    {{ error }}
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+
+            <!-- ========================================== -->
+            <!-- Slug -->
+            <!-- ========================================== -->
+
+            <div class="mb-4">
+
+                <label class="form-label fw-semibold">
+                    Slug
+                </label>
+
+                <input type="text" class="form-control" value="{{ industry.slug }}" readonly>
+
+                <div class="form-text">
+                    Slug is generated automatically from the industry name.
+                </div>
+
+            </div>
+
+
+            <!-- ========================================== -->
+            <!-- Description -->
+            <!-- ========================================== -->
+
+            <div class="mb-4">
+
+                {{ form.description.label(
+                class="form-label fw-semibold"
+                ) }}
+
+                {{ form.description(
+                class="form-control",
+                rows="5",
+                placeholder="Describe how BEST CONTROL serves this industry..."
+                ) }}
+
+                {% for error in form.description.errors %}
+
+                <div class="text-danger small mt-1">
+                    {{ error }}
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+
+            <!-- ========================================== -->
+            <!-- Current Image -->
+            <!-- ========================================== -->
+
+            <div class="mb-4">
+
+                <label class="form-label fw-semibold">
+                    Current Industry Image
+                </label>
+
+                {% if industry.image %}
+
+                <div id="current-industry-image" class="border rounded p-2 mb-3" style="max-width: 500px;">
+
+                    <img src="{{ url_for(
+                                'static',
+                                filename='uploads/industries/' ~ industry.image
+                            ) }}" alt="{{ industry.name }}" class="img-fluid rounded" style="
+                                max-height: 300px;
+                                width: 100%;
+                                object-fit: contain;
+                            ">
+
+                </div>
+
+                <div class="form-text mb-3">
+                    Current image:
+                    <strong>{{ industry.image }}</strong>
+                </div>
+
+                {% else %}
+
+                <div class="alert alert-light border">
+                    No image has been uploaded for this industry.
+                </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- ========================================== -->
+            <!-- Replace Image -->
+            <!-- ========================================== -->
+
+            <div class="mb-4">
+
+                {{ form.image.label(
+                class="form-label fw-semibold"
+                ) }}
+
+                {{ form.image(
+                class="form-control",
+                accept="image/jpeg,image/png,image/webp",
+                id="industry_image"
+                ) }}
+
+                <div class="form-text">
+                    Leave empty to keep the current image.
+                    Upload a new image to replace it.
+                </div>
+
+                {% for error in form.image.errors %}
+
+                <div class="text-danger small mt-1">
+                    {{ error }}
+                </div>
+
+                {% endfor %}
+
+
+                <!-- New Image Preview -->
+
+                <div id="industry-image-preview-container" class="mt-3 d-none">
+
+                    <label class="form-label fw-semibold">
+                        New Image Preview
+                    </label>
+
+                    <div class="border rounded p-2" style="max-width: 500px;">
+
+                        <img id="industry-image-preview" src="" alt="New industry image preview"
+                            class="img-fluid rounded" style="
+                    max-height: 300px;
+                    width: 100%;
+                    object-fit: contain;
+                ">
+
+                    </div>
+
+                    <div class="form-text mt-2">
+                        This image will replace the current image
+                        when you click <strong>Update Industry</strong>.
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ========================================== -->
+            <!-- Display Order -->
+            <!-- ========================================== -->
+
+            <div class="mb-4">
+
+                {{ form.display_order.label(
+                class="form-label fw-semibold"
+                ) }}
+
+                {{ form.display_order(
+                class="form-control",
+                min="0"
+                ) }}
+
+                <div class="form-text">
+                    Lower numbers appear first.
+                </div>
+
+                {% for error in form.display_order.errors %}
+
+                <div class="text-danger small mt-1">
+                    {{ error }}
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+            <!-- ========================================== -->
+<!-- SEO Preview -->
+<!-- ========================================== -->
+
+<div class="card border bg-light mb-4">
+
+    <div class="card-body">
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+
+            <div>
+                <h5 class="mb-1">
+                    SEO Preview
+                </h5>
+
+                <small class="text-muted">
+                    Preview how this industry may appear in search results.
+                </small>
+            </div>
+
+            <button
+                type="button"
+                id="generate-industry-seo"
+                class="btn btn-outline-primary btn-sm"
+            >
+                Generate SEO
+            </button>
+
+        </div>
+
+
+        <div class="border rounded bg-white p-3">
+
+            <div
+                id="industry-seo-preview-title"
+                class="fw-semibold"
+                style="
+                    color: #1a0dab;
+                    font-size: 18px;
+                "
+            >
+                Industry Title | BEST CONTROL
+            </div>
+
+
+            <div
+                id="industry-seo-preview-url"
+                class="small mb-2"
+                style="color: #188038;"
+            >
+                https://bestcontrol.in/industries/industry-slug
+            </div>
+
+
+            <div
+                id="industry-seo-preview-description"
+                class="text-muted small"
+            >
+                Your industry description will appear here.
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+            <!-- ========================================== -->
+            <!-- Active -->
+            <!-- ========================================== -->
+
+            <div class="form-check mb-4">
+
+                {{ form.is_active(
+                class="form-check-input"
+                ) }}
+
+                {{ form.is_active.label(
+                class="form-check-label fw-semibold"
+                ) }}
+
+            </div>
+
+
+            <hr class="my-4">
+
+
+            <!-- ========================================== -->
+            <!-- SEO -->
+            <!-- ========================================== -->
+
+            <h4 class="mb-3">
+                SEO Settings
+            </h4>
+
+
+            <div class="mb-4">
+
+                {{ form.meta_title.label(
+                class="form-label fw-semibold"
+                ) }}
+
+                {{ form.meta_title(
+                class="form-control",
+                placeholder="Industrial Automation Transformers | BEST CONTROL"
+                ) }}
+
+                {% for error in form.meta_title.errors %}
+
+                <div class="text-danger small mt-1">
+                    {{ error }}
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+
+            <div class="mb-4">
+
+                {{ form.meta_description.label(
+                class="form-label fw-semibold"
+                ) }}
+
+                {{ form.meta_description(
+                class="form-control",
+                rows="4",
+                placeholder="Describe this industry page for search engines..."
+                ) }}
+
+                {% for error in form.meta_description.errors %}
+
+                <div class="text-danger small mt-1">
+                    {{ error }}
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+
+            <!-- ========================================== -->
+            <!-- Actions -->
+            <!-- ========================================== -->
+
+            <div class="d-flex gap-2">
+
+                {{ form.submit(
+                class="btn btn-primary",
+                value="Update Industry"
+                ) }}
+
+                <a href="{{ url_for('admin.industry_list') }}" class="btn btn-outline-secondary">
+                    Cancel
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

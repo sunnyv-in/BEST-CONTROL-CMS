@@ -1,5 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
   initializeImagePreview();
+  initializeIndustryImagePreview();
+  initializeIndustrySEOPreview();
   initializeSlugGenerator();
   initializeSpecifications();
   initializeProductGallery();
@@ -7,6 +9,7 @@ document.addEventListener("DOMContentLoaded", function () {
   initializeDocuments();
   initializeSEOPreview();
 });
+
 
 /* ==========================================================
    Primary Image Preview
@@ -52,6 +55,329 @@ function initializeImagePreview() {
     }
   });
 }
+
+/* ==========================================================
+   Industry Image Preview
+========================================================== */
+
+function initializeIndustryImagePreview() {
+
+  const imageInput = document.getElementById("industry_image");
+
+  const previewContainer = document.getElementById(
+    "industry-image-preview-container"
+  );
+
+  const previewImage = document.getElementById(
+    "industry-image-preview"
+  );
+
+  const currentImage = document.getElementById(
+    "current-industry-image"
+  );
+
+
+  /*
+   * This page does not contain
+   * the industry image fields.
+   */
+  if (!imageInput || !previewContainer || !previewImage) {
+    return;
+  }
+
+
+  imageInput.addEventListener("change", function () {
+
+    const file = this.files && this.files[0];
+
+
+    /*
+     * No file selected.
+     */
+    if (!file) {
+
+      previewContainer.classList.add("d-none");
+
+      if (currentImage) {
+        currentImage.style.display = "";
+      }
+
+      return;
+    }
+
+
+    /*
+     * Make sure the selected file
+     * is actually an image.
+     */
+    if (!file.type.startsWith("image/")) {
+
+      this.value = "";
+
+      previewContainer.classList.add("d-none");
+
+      if (currentImage) {
+        currentImage.style.display = "";
+      }
+
+      return;
+    }
+
+
+    /*
+     * Hide current saved image.
+     */
+    if (currentImage) {
+      currentImage.style.display = "none";
+    }
+
+
+    /*
+     * Release previous temporary
+     * browser preview URL.
+     */
+    if (previewImage.dataset.objectUrl) {
+
+      URL.revokeObjectURL(
+        previewImage.dataset.objectUrl
+      );
+
+    }
+
+
+    /*
+     * Create temporary browser URL.
+     */
+    const objectUrl = URL.createObjectURL(file);
+
+
+    /*
+     * Show selected image.
+     */
+    previewImage.src = objectUrl;
+
+    previewImage.dataset.objectUrl = objectUrl;
+
+
+    /*
+     * Show new image preview.
+     */
+    previewContainer.classList.remove("d-none");
+
+  });
+
+}
+
+/* ==========================================================
+   Industry SEO Preview
+========================================================== */
+
+function initializeIndustrySEOPreview() {
+
+  const nameInput = document.getElementById("name");
+
+  const slugInput = document.getElementById("slug");
+
+  const metaTitleInput = document.getElementById("meta_title");
+
+  const metaDescriptionInput = document.getElementById(
+    "meta_description"
+  );
+
+
+  const previewTitle = document.getElementById(
+    "industry-seo-preview-title"
+  );
+
+  const previewURL = document.getElementById(
+    "industry-seo-preview-url"
+  );
+
+  const previewDescription = document.getElementById(
+    "industry-seo-preview-description"
+  );
+
+
+  const generateButton = document.getElementById(
+    "generate-industry-seo"
+  );
+
+
+  /*
+   * This page does not contain
+   * the Industry SEO elements.
+   */
+  if (
+    !nameInput ||
+    !metaTitleInput ||
+    !metaDescriptionInput ||
+    !previewTitle
+  ) {
+    return;
+  }
+
+
+  function generateSlug(name) {
+
+    return name
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+
+  }
+
+
+  function updatePreview() {
+
+    const name =
+      nameInput.value.trim() ||
+      "Industry Title";
+
+
+    const slug =
+      slugInput?.value.trim() ||
+      generateSlug(name) ||
+      "industry-slug";
+
+
+    const metaTitle =
+      metaTitleInput.value.trim() ||
+      `${name} | BEST CONTROL`;
+
+
+    const metaDescription =
+      metaDescriptionInput.value.trim() ||
+      `BEST CONTROL transformer solutions for ${name}. Reliable step-down transformers designed for industrial applications.`;
+
+
+    previewTitle.textContent = metaTitle;
+
+
+    if (previewURL) {
+
+      previewURL.textContent =
+        `https://bestcontrol.in/industries/${slug}`;
+
+    }
+
+
+    if (previewDescription) {
+
+      previewDescription.textContent =
+        metaDescription;
+
+    }
+
+  }
+
+
+  /*
+   * Update preview while typing.
+   */
+  nameInput.addEventListener(
+    "input",
+    updatePreview
+  );
+
+
+  metaTitleInput.addEventListener(
+    "input",
+    updatePreview
+  );
+
+
+  metaDescriptionInput.addEventListener(
+    "input",
+    updatePreview
+  );
+
+
+  if (slugInput) {
+
+    slugInput.addEventListener(
+      "input",
+      updatePreview
+    );
+
+  }
+
+
+  /*
+   * Generate SEO button.
+   */
+  if (generateButton) {
+
+    generateButton.addEventListener(
+      "click",
+      function () {
+
+        const name =
+          nameInput.value.trim();
+
+
+        if (!name) {
+
+          alert(
+            "Please enter the industry name first."
+          );
+
+          nameInput.focus();
+
+          return;
+
+        }
+
+
+        const descriptionInput =
+          document.querySelector(
+            'textarea[name="description"]'
+          );
+
+
+        const description =
+          descriptionInput?.value.trim() || "";
+
+
+        /*
+         * Generate Meta Title
+         */
+        metaTitleInput.value =
+          `${name} | BEST CONTROL`;
+
+
+        /*
+         * Generate Meta Description
+         */
+        if (description) {
+
+          metaDescriptionInput.value =
+            `BEST CONTROL provides reliable transformer solutions for ${name}. ${description}`;
+
+        } else {
+
+          metaDescriptionInput.value =
+            `BEST CONTROL provides reliable step-down transformer solutions for ${name}, designed for industrial applications and control systems.`;
+
+        }
+
+
+        updatePreview();
+
+      }
+    );
+
+  }
+
+
+  /*
+   * Initial preview.
+   */
+  updatePreview();
+
+}
+
+
 
 /* ==========================================================
    Product Gallery - Older Gallery Rows

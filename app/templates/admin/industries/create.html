@@ -1,0 +1,239 @@
+{% extends "admin/layout.html" %}
+
+{% block title %}Add Industry{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+        <h1 class="mb-1">Add Industry</h1>
+
+        <p class="text-muted mb-0">
+            Add an industry or application served by BEST CONTROL.
+        </p>
+    </div>
+
+    <a href="{{ url_for('admin.industry_list') }}" class="btn btn-outline-secondary">
+        ← Back to Industries
+    </a>
+
+</div>
+
+
+<div class="card shadow-sm">
+
+    <div class="card-body p-4">
+
+        <form method="POST" action="{{ url_for('admin.create_industry') }}" enctype="multipart/form-data">
+
+            {{ form.hidden_tag() }}
+
+
+            <!-- Industry Name -->
+
+            <div class="mb-4">
+
+                {{ form.name.label(class="form-label fw-semibold") }}
+
+                {{ form.name(
+                class="form-control",
+                placeholder="Example: Industrial Automation"
+                ) }}
+
+                {% for error in form.name.errors %}
+
+                <div class="text-danger small mt-1">
+                    {{ error }}
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+
+            <!-- Slug -->
+
+            <div class="mb-4">
+
+                {{ form.slug.label(class="form-label fw-semibold") }}
+
+                {{ form.slug(
+                class="form-control",
+                placeholder="Example: industrial-automation"
+                ) }}
+
+                <div class="form-text">
+                    Use lowercase words separated by hyphens.
+                </div>
+
+                {% for error in form.slug.errors %}
+
+                <div class="text-danger small mt-1">
+                    {{ error }}
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+
+            <!-- Description -->
+
+            <div class="mb-4">
+
+                {{ form.description.label(
+                class="form-label fw-semibold"
+                ) }}
+
+                {{ form.description(
+                class="form-control",
+                rows="5",
+                placeholder="Describe how BEST CONTROL serves this industry..."
+                ) }}
+
+                {% for error in form.description.errors %}
+
+                <div class="text-danger small mt-1">
+                    {{ error }}
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+
+            <!-- Industry Image -->
+
+            <div class="mb-4">
+
+                {{ form.image.label(
+                class="form-label fw-semibold"
+                ) }}
+
+                {{ form.image(
+                class="form-control",
+                accept="image/jpeg,image/png,image/webp"
+                ) }}
+
+                <div class="form-text">
+                    Upload an image showing the industry, machinery,
+                    application or environment where BEST CONTROL
+                    transformers are used.
+                </div>
+
+                {% for error in form.image.errors %}
+
+                <div class="text-danger small mt-1">
+                    {{ error }}
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+
+            <!-- Display Order -->
+
+            <div class="mb-4">
+
+                {{ form.display_order.label(
+                class="form-label fw-semibold"
+                ) }}
+
+                {{ form.display_order(
+                class="form-control",
+                min="0"
+                ) }}
+
+                <div class="form-text">
+                    Lower numbers appear first.
+                </div>
+
+                {% for error in form.display_order.errors %}
+
+                <div class="text-danger small mt-1">
+                    {{ error }}
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+
+            <!-- Active -->
+
+            <div class="form-check mb-4">
+
+                {{ form.is_active(
+                class="form-check-input"
+                ) }}
+
+                {{ form.is_active.label(
+                class="form-check-label fw-semibold"
+                ) }}
+
+            </div>
+
+
+            <hr class="my-4">
+
+
+            <!-- SEO -->
+
+            <h4 class="mb-3">
+                SEO Settings
+            </h4>
+
+
+            <div class="mb-4">
+
+                {{ form.meta_title.label(
+                class="form-label fw-semibold"
+                ) }}
+
+                {{ form.meta_title(
+                class="form-control",
+                placeholder="Industrial Automation Transformers | BEST CONTROL"
+                ) }}
+
+            </div>
+
+
+            <div class="mb-4">
+
+                {{ form.meta_description.label(
+                class="form-label fw-semibold"
+                ) }}
+
+                {{ form.meta_description(
+                class="form-control",
+                rows="4",
+                placeholder="Describe this industry page for search engines..."
+                ) }}
+
+            </div>
+
+
+            <!-- Actions -->
+
+            <div class="d-flex gap-2">
+
+                {{ form.submit(
+                class="btn btn-primary",
+                value="Save Industry"
+                ) }}
+
+                <a href="{{ url_for('admin.industry_list') }}" class="btn btn-outline-secondary">
+                    Cancel
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}
