@@ -1,0 +1,76 @@
+{% if company_media %}
+
+<section class="company-media-section">
+
+    <div class="container">
+
+        <!-- Section Header -->
+        <div class="company-media-header">
+
+            <span class="company-media-eyebrow">
+                OUR FACILITY
+            </span>
+
+            <h2>
+                Inside BEST CONTROL
+            </h2>
+
+            <p>
+                A closer look at our manufacturing facility, production
+                environment and the people behind our transformer solutions.
+            </p>
+
+        </div>
+
+
+        <!-- Media Grid -->
+        <div class="company-media-grid">
+
+            {% for media in company_media %}
+
+            <article class="company-media-card">
+
+                <div class="company-media-image">
+
+                    <img
+                        src="{{ url_for(
+                            'static',
+                            filename='uploads/company_media/' ~ media.file
+                        ) }}"
+                        alt="{{ media.alt_text or media.title }}"
+                        loading="lazy"
+                    >
+
+                </div>
+
+                <div class="company-media-content">
+
+                    {% if media.category %}
+                    <span class="company-media-category">
+                        {{ media.category }}
+                    </span>
+                    {% endif %}
+
+                    <h3>
+                        {{ media.title }}
+                    </h3>
+
+                    {% if media.description %}
+                    <p>
+                        {{ media.description }}
+                    </p>
+                    {% endif %}
+
+                </div>
+
+            </article>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endif %}
