@@ -14,10 +14,7 @@
         </p>
     </div>
 
-    <a
-        href="{{ url_for('admin.create_industry') }}"
-        class="btn btn-primary"
-    >
+    <a href="{{ url_for('admin.create_industry') }}" class="btn btn-primary">
         + Add Industry
     </a>
 
@@ -36,25 +33,19 @@
 
             {% if industry.image %}
 
-            <div
-                style="
+            <div style="
                     height: 200px;
                     overflow: hidden;
                     background: #f8f9fa;
-                "
-            >
-                <img
-                    src="{{ url_for(
+                ">
+                <img src="{{ url_for(
                         'static',
                         filename='uploads/industries/' ~ industry.image
-                    ) }}"
-                    alt="{{ industry.name }}"
-                    style="
+                    ) }}" alt="{{ industry.name }}" style="
                         width: 100%;
                         height: 100%;
                         object-fit: cover;
-                    "
-                >
+                    ">
             </div>
 
             {% endif %}
@@ -121,31 +112,21 @@
 
                     <div class="d-flex gap-2">
 
-                        <a
-                            href="{{ url_for(
+                        <a href="{{ url_for(
                                 'admin.edit_industry',
                                 id=industry.id
-                            ) }}"
-                            class="btn btn-outline-primary btn-sm"
-                        >
+                            ) }}" class="btn btn-outline-primary btn-sm">
                             Edit
                         </a>
 
-                        <form
-                            method="POST"
-                            action="{{ url_for(
+                        <form method="POST" action="{{ url_for(
                                 'admin.delete_industry',
                                 id=industry.id
-                            ) }}"
-                            onsubmit="return confirm(
+                            ) }}" onsubmit="return confirm(
                                 'Are you sure you want to delete this industry?'
-                            );"
-                        >
+                            );">
 
-                            <button
-                                type="submit"
-                                class="btn btn-outline-danger btn-sm"
-                            >
+                            <button type="submit" class="btn btn-outline-danger btn-sm">
                                 Delete
                             </button>
 
@@ -179,10 +160,7 @@
             Add the industries and applications that BEST CONTROL serves.
         </p>
 
-        <a
-            href="{{ url_for('admin.create_industry') }}"
-            class="btn btn-primary"
-        >
+        <a href="{{ url_for('admin.create_industry') }}" class="btn btn-primary">
             + Add Industry
         </a>
 
